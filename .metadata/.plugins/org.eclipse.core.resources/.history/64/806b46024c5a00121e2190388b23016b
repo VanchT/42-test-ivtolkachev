@@ -1,0 +1,51 @@
+package com.ivtolkachev.facebookfriends.data;
+
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.util.Log;
+
+public class DatabaseWorker {
+
+	private static final String TAG = "DatabaseWorkerTag";
+	
+	private static DatabaseWorker instance = null;
+	private SQLiteDatabase db;
+	private DatabaseHelper dbHelper;
+	
+	private DatabaseWorker(Context context){
+		dbHelper = new DatabaseHelper(context);
+	}
+	
+	/**
+	 * The method initializes an instance of DatabaseWorker if it is need and returns it.
+	 * @param context the ApplicationContext
+	 * @return an instance of DatabaneWorker.
+	 */
+	public static DatabaseWorker getDatabaseWorker(Context context){
+		if (instance == null) {
+			 instance = new DatabaseWorker(context);
+		}
+		return instance;
+	}
+	
+	/**
+	 * The method opens connection with database.
+	 * @param context the ApplicationContext
+	 */
+	public void openDB(Context context){
+		if (!db.isOpen()){
+			try {
+				db = dbHelper.getWritableDatabase();
+			} catch (SQLiteException e) {
+				Log.e(TAG, "Error with opening of db.");
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void closeDB(){
+		db.close();
+	}
+	
+}

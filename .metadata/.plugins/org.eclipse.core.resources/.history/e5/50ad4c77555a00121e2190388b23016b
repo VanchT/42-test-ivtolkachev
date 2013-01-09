@@ -1,0 +1,107 @@
+package com.ivtolkachev.facebookfriends.data;
+
+import java.util.ArrayList;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.ivtolkachev.facebookfriends.model.User;
+
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.util.Log;
+
+public class DatabaseWorker {
+
+	private static final String TAG = "DatabaseWorkerTag";
+	
+	private static DatabaseWorker instance = null;
+	private SQLiteDatabase db;
+	private DatabaseHelper dbHelper;
+	
+	private DatabaseWorker(Context context){
+		dbHelper = new DatabaseHelper(context);
+	}
+	
+	/**
+	 * The method initializes an instance of DatabaseWorker if it is need and returns it.
+	 * @param context the ApplicationContext
+	 * @return an instance of DatabaneWorker.
+	 */
+	public static DatabaseWorker getDatabaseWorker(Context context){
+		if (instance == null) {
+			 instance = new DatabaseWorker(context);
+		}
+		return instance;
+	}
+	
+	/**
+	 * The method opens connection with database.
+	 * @param context the ApplicationContext
+	 */
+	public void openDB(){
+		if (!db.isOpen()){
+			try {
+				db = dbHelper.getWritableDatabase();
+			} catch (SQLiteException e) {
+				Log.e(TAG, "Error with opening of db.");
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void closeDB(){
+		db.close();
+	}
+	
+	/**
+	 * The method extracts the data of users from the database.
+	 * @return a list of users.
+	 */
+	public synchronized ArrayList<User> getUsers(){
+		ArrayList<User> users = new ArrayList<User>();
+		if (db.isOpen()){
+			Cursor cursor = db.query(DatabaseHelper.USERS_TABLE, null, null, null, null, null, null);
+			while (cursor.moveToNext()) {
+				User user = new User(
+						cursor.getLong(DatabaseHelper.ID_USER_ID),
+						cursor.getString(DatabaseHelper.ID_USER_NAME), 
+						cursor.getString(DatabaseHelper.ID_USER_SURNAME), 
+						cursor.getLong(DatabaseHelper.ID_USER_BIRTH), 
+						cursor.getString(DatabaseHelper.ID_USER_BIO), 
+						parseUserContacts(cursor.getString(DatabaseHelper.ID_USER_CONTACTS)));
+				users.add(user);
+			}
+		} else {
+			Log.e(TAG, "The database has not opened!");
+		}
+		return users;
+	}
+	
+	// private methods
+	
+	/**
+	 * The method parses the json string with user's contacts.
+	 * @param jsonString the json string which must  be parsed. 
+	 * @return the ArrayList of user's contacts.
+	 */
+	private ArrayList<String> parseUserContacts(String jsonString){
+		ArrayList<String> userContacts = new ArrayList<String>();
+		try {
+			JSONObject contacts = new JSONObject(jsonString);
+			if (contacts.has("email")){
+				userContacts.add("email: " + contacts.getString("email"));
+			}
+			if (contacts.has("email")){
+				userContacts.add("email: " + contacts.getString("email"));
+			}
+		} catch (JSONException e) {
+			Log.e(TAG, "Error with parsing of json string!");
+			e.printStackTrace();
+		}
+		return userContacts;
+	}
+	
+}

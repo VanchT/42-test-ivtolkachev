@@ -1,4 +1,3 @@
 INDEX VERSION 1.126+E:\Programming\42CoffeeCups\repository\42-test-tolkachev\.metadata\.plugins\org.eclipse.jdt.core
-753608886.index
 106172149.index
 1698143153.index

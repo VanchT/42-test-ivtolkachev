@@ -1,0 +1,34 @@
+package com.ivtolkachev.facebookfriends.data;
+
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+
+public class DatabaseWorker {
+
+	private static DatabaseWorker instance = null;
+	private SQLiteDatabase db;
+	private DatabaseHelper dbHelper;
+	
+	private DatabaseWorker(Context context){
+		dbHelper = new DatabaseHelper(context);
+	}
+	
+	public static DatabaseWorker getDatabaseWorker(Context context){
+		if (instance == null) {
+			 instance = new DatabaseWorker(context);
+		}
+		return instance;
+	}
+	
+	public void openDB(Context context){
+		if (!db.isOpen()){
+			
+			db = 
+		}
+	}
+	
+	public void closeDB(){
+		
+	}
+	
+}

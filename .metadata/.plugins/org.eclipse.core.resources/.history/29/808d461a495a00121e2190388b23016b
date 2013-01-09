@@ -1,0 +1,18 @@
+package com.ivtolkachev.facebookfriends.data;
+
+public class DatabaseWorker {
+
+	private DatabaseWorker instance = null;
+	
+	private DatabaseWorker(){
+		
+	}
+	
+	public DatabaseWorker getDatabaseWorker(){
+		if (instance == null) {
+			 instance = new DatabaseWorker();
+		}
+		return instance;
+	}
+	
+}
