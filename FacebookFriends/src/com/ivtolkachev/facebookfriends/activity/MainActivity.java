@@ -1,4 +1,8 @@
-package com.ivtolkachev.facebookfriends;
+package com.ivtolkachev.facebookfriends.activity;
+
+import com.ivtolkachev.facebookfriends.R;
+import com.ivtolkachev.facebookfriends.R.layout;
+import com.ivtolkachev.facebookfriends.R.menu;
 
 import android.os.Bundle;
 import android.app.Activity;
