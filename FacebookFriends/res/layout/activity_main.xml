@@ -1,7 +1,13 @@
-<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+
+<ScrollView xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity" xmlns:android="http://schemas.android.com/apk/res/android">
+     xmlns:android="http://schemas.android.com/apk/res/android">
+<RelativeLayout 
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ImageView
         android:id="@+id/image_me"
@@ -100,3 +106,4 @@
         />
  
 </RelativeLayout>
+</ScrollView>

@@ -20,11 +20,17 @@
 		<item value="347" key="DIALOG_WIDTH"/>
 		<item value="org.eclipse.ui.views.PropertySheet" key="ShowViewDialog.STORE_SELECTED_VIEW_ID"/>
 		<item value="231" key="DIALOG_Y_ORIGIN"/>
-		<item value="453" key="DIALOG_HEIGHT"/>
 		<item value="795" key="DIALOG_X_ORIGIN"/>
+		<item value="453" key="DIALOG_HEIGHT"/>
 		<item value="1|Segoe UI|8.830189|0|WINDOWS|1|-13|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 		<list key="ShowViewDialog.STORE_EXPANDED_CATEGORIES_ID">
 			<item value="org.eclipse.ui"/>
+		</list>
+	</section>
+	<section name="ImportExportAction">
+		<item value="com.android.ide.eclipse.adt.project.ImportProjectWizard" key="ImportExportPage.STORE_SELECTED_IMPORT_WIZARD_ID"/>
+		<list key="ImportExportPage.STORE_EXPANDED_IMPORT_CATEGORIES">
+			<item value="com.android.ide.eclipse.wizards.category"/>
 		</list>
 	</section>
 </section>

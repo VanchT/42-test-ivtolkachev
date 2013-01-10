@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 import com.ivtolkachev.facebookfriends.R;
 import com.ivtolkachev.facebookfriends.R.id;
-import com.ivtolkachev.facebookfriends.R.layout;
-import com.ivtolkachev.facebookfriends.R.menu;
 import com.ivtolkachev.facebookfriends.data.DatabaseWorker;
 import com.ivtolkachev.facebookfriends.model.User;
 
@@ -17,6 +15,8 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
+	private static final String APP_ID = "148081905344290";
+	
 	private DatabaseWorker dbWorker;
 	
     @Override
