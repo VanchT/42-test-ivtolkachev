@@ -24,7 +24,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         dbWorker = DatabaseWorker.getDatabaseWorker(this.getApplicationContext());
-        dbWorker.openDB();
+        dbWorker.openDatabase();
         showUserData();
     }
 
@@ -38,7 +38,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onStop() {
     	super.onStop();
-    	dbWorker.closeDB();
+    	dbWorker.openDatabase();
     }
     
     private void showUserData(){
@@ -46,7 +46,7 @@ public class MainActivity extends Activity {
 
 			@Override
 			protected ArrayList<User> doInBackground(Void... params) {
-				return dbWorker.getUsers();
+				return dbWorker.getUser();
 			}
     		
 			protected void onPostExecute(ArrayList<User> result) {

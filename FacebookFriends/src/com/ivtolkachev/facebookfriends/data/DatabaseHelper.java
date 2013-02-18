@@ -77,8 +77,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		
 		db.execSQL("INSERT INTO " + USERS_TABLE + " VALUES (null, 'Иван', 'Толкачёв', " + date.getTime() 
 				+ ", 'Android developer from Kherson'," 
-				+ " '{\"email\":\"ivtolkachev@gmail.com\", \"skype\":\"john_pilgrim_midnight_warrior\", \"jabber\":\"ivtolkachev@jabber.org\","
-				+ "\"phoneNumbers\":[\"+380950731193\"] }')");
+				+ " 'email: ivtolkachev@gmail.com;skype: john_pilgrim_midnight_warrior;jabber: ivtolkachev@jabber.org;phone: +380950731193'");
 	}
 
 }

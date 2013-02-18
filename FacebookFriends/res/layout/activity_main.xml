@@ -17,7 +17,8 @@
         android:layout_alignParentTop="true"
         android:contentDescription="@string/me_image_description"
         android:src="@drawable/me" 
-        android:layout_margin="5dp"/>
+        android:layout_margin="5dp"
+        />
     
     <TextView 
         android:id="@+id/name_me"

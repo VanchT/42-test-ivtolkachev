@@ -18,12 +18,12 @@ public class DatabaseWorker {
 
 	private static final String TAG = "DatabaseWorkerTag";
 	
-	private static DatabaseWorker instance = null;
-	private SQLiteDatabase db;
-	private DatabaseHelper dbHelper;
+	private static DatabaseWorker mInstance = null;
+	private SQLiteDatabase mDatabase;
+	private DatabaseHelper mDatabaseHelper;
 	
 	private DatabaseWorker(Context context){
-		dbHelper = new DatabaseHelper(context);
+		mDatabaseHelper = new DatabaseHelper(context);
 	}
 	
 	/**
@@ -32,20 +32,20 @@ public class DatabaseWorker {
 	 * @return an instance of DatabaneWorker.
 	 */
 	public static DatabaseWorker getDatabaseWorker(Context context){
-		if (instance == null) {
-			 instance = new DatabaseWorker(context);
+		if (mInstance == null) {
+			 mInstance = new DatabaseWorker(context);
 		}
-		return instance;
+		return mInstance;
 	}
 	
 	/**
 	 * The method opens connection with database.
 	 * @param context the ApplicationContext
 	 */
-	public void openDB(){
-		if (db == null || !db.isOpen()){
+	public void openDatabase(){
+		if (mDatabase == null || !mDatabase.isOpen()){
 			try {
-				db = dbHelper.getWritableDatabase();
+				mDatabase = mDatabaseHelper.getWritableDatabase();
 				Log.d(TAG, "DB was opened.");
 			} catch (SQLiteException e) {
 				Log.e(TAG, "Error with opening of db.");
@@ -54,9 +54,9 @@ public class DatabaseWorker {
 		}
 	}
 	
-	public void closeDB(){
-		if (db != null && db.isOpen()) {
-			db.close();
+	public void closeDatabase(){
+		if (mDatabase != null && mDatabase.isOpen()) {
+			mDatabase.close();
 			Log.d(TAG, "DB was closed.");
 		}
 	}
@@ -65,10 +65,10 @@ public class DatabaseWorker {
 	 * The method extracts the data of users from the database.
 	 * @return a list of users.
 	 */
-	public synchronized ArrayList<User> getUsers(){
+	public synchronized ArrayList<User> getUser(){
 		ArrayList<User> users = new ArrayList<User>();
-		if (db.isOpen()){
-			Cursor cursor = db.query(DatabaseHelper.USERS_TABLE, null, null, null, null, null, null);
+		if (mDatabase.isOpen()){
+			Cursor cursor = mDatabase.query(DatabaseHelper.USERS_TABLE, null, null, null, null, null, null);
 			while (cursor.moveToNext()) {
 				User user = new User(
 						cursor.getLong(DatabaseHelper.ID_USER_ID),
