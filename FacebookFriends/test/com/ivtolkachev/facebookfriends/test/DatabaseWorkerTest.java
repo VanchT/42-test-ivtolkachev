@@ -23,6 +23,7 @@ public class DatabaseWorkerTest {
 	@Before
 	public void setUp() throws Exception {
 		mActivity = new MainActivity();
+		mDatabaseWorker = DatabaseWorker.getDatabaseWorker(mActivity.getApplicationContext());
 	}
 	
 	@Test
@@ -33,21 +34,23 @@ public class DatabaseWorkerTest {
 	
 	@Test
 	public void testOpenDatabase() throws Exception {
-		assertNull(mDatabaseWorker);
-		//mDatabaseWorker.openDatabase();
-		//SQLiteDatabase database = mDatabaseWorker.getDatabase(); 
-		//assertTrue(database != null && database.isOpen());
+		assertNotNull(mDatabaseWorker);
+		mDatabaseWorker.openDatabase();
+		SQLiteDatabase database = mDatabaseWorker.getDatabase(); 
+		assertTrue(database != null && database.isOpen());
 	}
 	
 	@Test
 	public void testGetCurrentUser() throws Exception {
 		User user = null;
+		assertNotNull(mDatabaseWorker);
 		user = mDatabaseWorker.getUser(120);
 		assertNotNull(user);
 	}
 	
 	@Test
 	public void testCloseDatabase() throws Exception {
+		assertNotNull(mDatabaseWorker);
 		mDatabaseWorker.closeDatabase();
 		SQLiteDatabase database = mDatabaseWorker.getDatabase();
 		assertTrue(database == null || !database.isOpen());
