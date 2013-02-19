@@ -28,7 +28,6 @@ INDEX VERSION 1.126+E:\Programming\42CoffeeCups\repository\42-test-tolkachev\.me
 3277441100.index
 2084155717.index
 3585733931.index
-753608886.index
 70140766.index
 4251467834.index
 1557334054.index
