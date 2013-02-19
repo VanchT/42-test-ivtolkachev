@@ -15,9 +15,9 @@ public class User {
 	private String mUserSurname;
 	private String mUserBirthday;
 	private String mUserBio;
-	private ArrayList<String> mUserContacts;
+	private String[] mUserContacts;
 	
-	public User(long uId, String uName, String uSurname, long uBirthday, String uBio, ArrayList<String> uContacts){
+	public User(long uId, String uName, String uSurname, long uBirthday, String uBio, String[] uContacts){
 		this.mUserId = uId;
 		this.mUserName = uName;
 		this.mUserSurname = uSurname;
@@ -91,13 +91,13 @@ public class User {
 	/**
 	 * @return the userContacts
 	 */
-	public ArrayList<String> getUserContacts() {
+	public String[] getUserContacts() {
 		return mUserContacts;
 	}
 	/**
 	 * @param userContacts the userContacts to set
 	 */
-	public void setUserContacts(ArrayList<String> userContacts) {
+	public void setUserContacts(String[] userContacts) {
 		this.mUserContacts = userContacts;
 	}	
 	

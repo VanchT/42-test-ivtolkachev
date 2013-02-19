@@ -26,6 +26,10 @@ public class DatabaseWorker {
 		mDatabaseHelper = new DatabaseHelper(context);
 	}
 	
+	public SQLiteDatabase getDatabase() {
+		return mDatabase;
+	}
+	
 	/**
 	 * The method initializes an instance of DatabaseWorker if it is need and returns it.
 	 * @param context the ApplicationContext
@@ -65,24 +69,25 @@ public class DatabaseWorker {
 	 * The method extracts the data of users from the database.
 	 * @return a list of users.
 	 */
-	public synchronized ArrayList<User> getUser(){
-		ArrayList<User> users = new ArrayList<User>();
+	public synchronized User getUser(long userId){
+		User user = null;
 		if (mDatabase.isOpen()){
-			Cursor cursor = mDatabase.query(DatabaseHelper.USERS_TABLE, null, null, null, null, null, null);
-			while (cursor.moveToNext()) {
-				User user = new User(
-						cursor.getLong(DatabaseHelper.ID_USER_ID),
-						cursor.getString(DatabaseHelper.ID_USER_NAME), 
-						cursor.getString(DatabaseHelper.ID_USER_SURNAME), 
-						cursor.getLong(DatabaseHelper.ID_USER_BIRTH), 
-						cursor.getString(DatabaseHelper.ID_USER_BIO), 
-						parseUserContacts(cursor.getString(DatabaseHelper.ID_USER_CONTACTS)));
-				users.add(user);
+			Cursor cursor = mDatabase.query(DatabaseHelper.USERS_TABLE, null,
+					DatabaseHelper.USER_ID + "=" + userId, null, null, null, null);
+			if (cursor.moveToNext()) {
+				user = new User(
+					cursor.getLong(0),
+					cursor.getString(1), 
+					cursor.getString(2), 
+					cursor.getLong(3), 
+					cursor.getString(4), 
+					cursor.getString(5).split(";")
+					);
 			}
 		} else {
 			Log.e(TAG, "The database has not opened!");
 		}
-		return users;
+		return user;
 	}
 	
 	// private methods
