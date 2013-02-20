@@ -30,6 +30,12 @@ public class MainActivity extends Activity {
         mDatabaseWorker.openDatabase();
         showUserData();
     }
+    
+    //TODO: The method added for testing.
+    public void create(){
+    	onCreate(null);
+    	
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
