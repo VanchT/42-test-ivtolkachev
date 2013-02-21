@@ -24,12 +24,12 @@ public class MainActivityTest {
 	private TextView mName;
 	private TextView mSurname;
 	private TextView mBirthday;
-	private TextView mBio;
-	private TextView mContacts;
+	private TextView mLocation;
+	private TextView mUsername;
 	private ImageView mImage;
 	private TextView mBirthdayLable;
-	private TextView mBioLable;
-	private TextView mContactsLable;
+	private TextView mLocationLable;
+	private TextView mUsernameLable;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -43,16 +43,16 @@ public class MainActivityTest {
 		assertNotNull(mSurname);
 		mBirthday = (TextView)mActivity.findViewById(R.id.birthday_me);
 		assertNotNull(mBirthday);
-		mBio = (TextView)mActivity.findViewById(R.id.bio_me);
-		assertNotNull(mBio);
-		mContacts = (TextView)mActivity.findViewById(R.id.contacts_me);
-		assertNotNull(mContacts);
 		mBirthdayLable = (TextView)mActivity.findViewById(R.id.birthday_me_lable);
 		assertNotNull(mBirthdayLable);
-		mBioLable = (TextView)mActivity.findViewById(R.id.bio_me_lable);
-		assertNotNull(mBioLable);
-		mContactsLable = (TextView)mActivity.findViewById(R.id.contacts_me_lable);
-		assertNotNull(mContactsLable);
+		mLocationLable = (TextView)mActivity.findViewById(R.id.location_me_lable);
+		assertNotNull(mLocationLable);
+		mLocation = (TextView)mActivity.findViewById(R.id.location_me);
+		assertNotNull(mLocation);
+		mUsername = (TextView)mActivity.findViewById(R.id.lusername_me);
+		assertNotNull(mUsername);
+		mUsernameLable = (TextView)mActivity.findViewById(R.id.lusername_me_lable);
+		assertNotNull(mUsernameLable);
 	}
 	
 	@Test
@@ -68,21 +68,19 @@ public class MainActivityTest {
 		ViewAsserts.assertOnScreen(origin, mName);
 		ViewAsserts.assertOnScreen(origin, mSurname);
 		ViewAsserts.assertOnScreen(origin, mBirthday);
-		ViewAsserts.assertOnScreen(origin, mBio);
-		ViewAsserts.assertOnScreen(origin, mContacts);
+		ViewAsserts.assertOnScreen(origin, mLocation);
+		ViewAsserts.assertOnScreen(origin, mUsername);
 		ViewAsserts.assertOnScreen(origin, mBirthdayLable);
-		ViewAsserts.assertOnScreen(origin, mBioLable);
-		ViewAsserts.assertOnScreen(origin, mContactsLable);
+		ViewAsserts.assertOnScreen(origin, mLocationLable);
+		ViewAsserts.assertOnScreen(origin, mUsernameLable);
 	}
 	
 	@Test
 	public void testViewsAlign() throws Exception {
 		final View origin = mActivity.getWindow().getDecorView();
 		ViewAsserts.assertLeftAligned(origin, mImage);
-		ViewAsserts.assertLeftAligned(origin, mBioLable);
-		ViewAsserts.assertLeftAligned(origin, mBio);
-		ViewAsserts.assertLeftAligned(origin, mContactsLable);
-		ViewAsserts.assertLeftAligned(origin, mContacts);
+		ViewAsserts.assertLeftAligned(origin, mLocationLable);
+		ViewAsserts.assertLeftAligned(origin, mLocation);
 	}
 
 }

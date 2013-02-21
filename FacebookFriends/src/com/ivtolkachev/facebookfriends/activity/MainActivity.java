@@ -15,7 +15,6 @@ import com.ivtolkachev.facebookfriends.model.User;
 public class MainActivity extends Activity {
 
 	private static final String APP_ID = "148081905344290";
-	private static final String PREF_USER_ID = "user_id";
 	
 	private DatabaseWorker mDatabaseWorker;
 	private SharedPreferences mPreferences;
@@ -25,7 +24,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        mPreferences = getSharedPreferences("AppPreferences", 0);
+        mPreferences = getSharedPreferences(getString(R.string.app_preferences), 0);
         mDatabaseWorker = DatabaseWorker.getDatabaseWorker(this.getApplicationContext());
         mDatabaseWorker.openDatabase();
         showUserData();
@@ -49,19 +48,24 @@ public class MainActivity extends Activity {
     	super.onStop();
     	mDatabaseWorker.openDatabase();
     }
+   
+    //TODO: It is temporal for testing.
+    public void setPrefs(){
+    	SharedPreferences.Editor editor = mPreferences.edit();
+    	editor.putLong(getString(R.string.preference_user_id), 120);
+    	editor.commit();
+    }
+    
     
     private void showUserData(){  
     	//TODO: It is temporal for testing.
-    	SharedPreferences.Editor editor = mPreferences.edit();
-    	editor.putLong(PREF_USER_ID, 120);
-    	editor.commit();
-    	//
+    	setPrefs();
     	
     	new AsyncTask<Void, Void, User>(){
 
 			@Override
 			protected User doInBackground(Void... params) {
-				long userId = mPreferences.getLong(PREF_USER_ID, -1);
+				long userId = mPreferences.getLong(getString(R.string.preference_user_id), -1);
 				User user = null;
 				if (userId > -1) {
 					user = mDatabaseWorker.getUser(userId);
