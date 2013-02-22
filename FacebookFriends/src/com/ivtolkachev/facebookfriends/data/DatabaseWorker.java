@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.facebook.model.GraphUser;
 import com.ivtolkachev.facebookfriends.model.Location;
 import com.ivtolkachev.facebookfriends.model.User;
 
@@ -98,7 +99,7 @@ public class DatabaseWorker {
 	 * @param user
 	 * @return
 	 */
-	public synchronized String addUser(User user) {
+	public synchronized String addUser(GraphUser user) {
 		String result = null;
 		ContentValues values = new ContentValues();
 		values.put(DatabaseHelper.USER_ID, user.getId());
