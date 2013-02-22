@@ -81,14 +81,14 @@ public class MainActivity extends Activity {
 		    		TextView bio = (TextView)findViewById(id.bio_me);
 		    		TextView contacts = (TextView)findViewById(id.contacts_me);
 		    		
-		    		name.setText(result.getUserName());
-		    		surname.setText(result.getUserSurname());
-		    		birthday.setText(result.getUserBirthday());
-		    		bio.setText(result.getUserBio());
-		    		String[] userContacts = result.getUserContacts();
-		    		for (int i = 0; i < userContacts.length; i++){
+		    		//name.setText(result.getUserName());
+		    		//surname.setText(result.getUserSurname());
+		    		//birthday.setText(result.getUserBirthday());
+		    		//bio.setText(result.getUserBio());
+		    		//String[] userContacts = result.getUserContacts();
+		    		/*for (int i = 0; i < userContacts.length; i++){
 		    			contacts.setText(contacts.getText() + userContacts[i] + "\n");
-		    		}		
+		    		}	*/	
 		    	}
 			}
 			

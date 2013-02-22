@@ -74,7 +74,7 @@ public class DatabaseWorker {
 		if (mDatabase.isOpen()){
 			Cursor cursor = mDatabase.query(DatabaseHelper.USERS_TABLE, null,
 					DatabaseHelper.USER_ID + "=" + userId, null, null, null, null);
-			if (cursor.moveToNext()) {
+			/*if (cursor.moveToNext()) {
 				user = new User(
 					cursor.getLong(0),
 					cursor.getString(1), 
@@ -83,7 +83,7 @@ public class DatabaseWorker {
 					cursor.getString(4), 
 					cursor.getString(5).split(";")
 					);
-			}
+			}*/
 		} else {
 			Log.e(TAG, "The database has not opened!");
 		}
