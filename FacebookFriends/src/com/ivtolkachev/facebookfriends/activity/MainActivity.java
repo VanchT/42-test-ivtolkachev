@@ -47,27 +47,20 @@ public class MainActivity extends Activity {
     protected void onStop() {
     	super.onStop();
     	mDatabaseWorker.openDatabase();
-    }
-   
-    //TODO: It is temporal for testing.
-    public void setPrefs(){
-    	SharedPreferences.Editor editor = mPreferences.edit();
-    	editor.putLong(getString(R.string.preference_user_id), 120);
-    	editor.commit();
-    }
+    }    
     
-    
+    /**
+     * 
+     */
     private void showUserData(){  
-    	//TODO: It is temporal for testing.
-    	setPrefs();
     	
     	new AsyncTask<Void, Void, User>(){
 
 			@Override
 			protected User doInBackground(Void... params) {
-				long userId = mPreferences.getLong(getString(R.string.preference_user_id), -1);
+				String userId = mPreferences.getString(getString(R.string.preference_user_id), "");
 				User user = null;
-				if (userId > -1) {
+				if (!"".equals(userId)) {
 					user = mDatabaseWorker.getUser(userId);
 				}
 				return user;

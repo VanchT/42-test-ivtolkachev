@@ -14,11 +14,11 @@ public class Location implements GraphLocation {
 	private String mCity;
 	private String mStreet;
 	private String mZip;
-	private Double mLatitude;
-	private Double mLongitude;
+	private double mLatitude;
+	private double mLongitude;
 	
 	public Location(String mCountry, String mState, String mCity,
-			String mStreet, String mZip, Double mLatitude, Double mLongitude) {
+			String mStreet, String mZip, double mLatitude, double mLongitude) {
 		super();
 		this.mCountry = mCountry;
 		this.mState = mState;
@@ -27,6 +27,7 @@ public class Location implements GraphLocation {
 		this.mZip = mZip;
 		this.mLatitude = mLatitude;
 		this.mLongitude = mLongitude;
+		
 	}
 
 	/**

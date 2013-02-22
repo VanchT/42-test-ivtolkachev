@@ -69,7 +69,7 @@ public class DatabaseWorker {
 	 * The method extracts the data of users from the database.
 	 * @return a list of users.
 	 */
-	public synchronized User getUser(long userId){
+	public synchronized User getUser(String userId){
 		User user = null;
 		if (mDatabase.isOpen()){
 			Cursor cursor = mDatabase.query(DatabaseHelper.USERS_TABLE, null,

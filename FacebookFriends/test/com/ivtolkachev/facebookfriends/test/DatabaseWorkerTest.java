@@ -2,8 +2,8 @@ package com.ivtolkachev.facebookfriends.test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +18,7 @@ import com.facebook.model.GraphObject;
 import com.ivtolkachev.facebookfriends.R;
 import com.ivtolkachev.facebookfriends.activity.MainActivity;
 import com.ivtolkachev.facebookfriends.data.DatabaseWorker;
+import com.ivtolkachev.facebookfriends.model.Location;
 import com.ivtolkachev.facebookfriends.model.User;
 
 @RunWith(RobolectricTestRunner.class)
@@ -45,45 +46,45 @@ public class DatabaseWorkerTest {
 		assertTrue(database != null && database.isOpen());
 	}
 	
-	@Test
-	public void testGetCurrentUser() throws Exception {
-		User user = null;
-		long testId = mAppPref.getLong(mActivity.getString(R.string.preference_user_id), -1);
-		assertTrue(testId > -1);
-		assertNotNull(mDatabaseWorker);
-		user = mDatabaseWorker.getUser(testId);
-		assertNotNull(user);
-		//assertNotNull(user.getUserId());
-		//assertTrue(testId == user.getUserId());
+	@Test 
+ 	public void testAddUser() throws Exception {
+		String userId = "111";
+		User user = new User(userId, "Иванов Иван Иванович", "Иван", "Иванович", "Иванов", "http://link", "IvanIvanov", "16.12.2012");
+		long rowId = mDatabaseWorker.addUser(user);
+		assertTrue(rowId > -1);
+		if (rowId > -1) {
+			SharedPreferences.Editor editor = mAppPref.edit();
+			editor.putString(mActivity.getString(R.string.preference_user_id), userId);
+			editor.commit();
+		}
+	}
+	
+	@Test 
+ 	public void testAddLocation() throws Exception {
+		Location location = new Location("Ukraine", null, "Kherson", "Dimitrova", "73020", 0, 0); 
+		long rowId = mDatabaseWorker.addLocation(location, "111");
+		assertTrue(rowId > -1);
 	}
 	
 	@Test
 	public void testGetUserLocation() throws Exception {
 		GraphLocation location = null;
-		long testId = mAppPref.getLong(mActivity.getString(R.string.preference_user_id), -1);
-		assertTrue(testId > -1);
-		location = mDatabaseWorker.getUserLocation(testId);
+		String userId = mAppPref.getString(mActivity.getString(R.string.preference_user_id), null);
+		assertNotNull(userId);
+		location = mDatabaseWorker.getUserLocation(userId);
 		assertNotNull(location);
 	}
 	
-	@Test 
- 	public void testAddUser() throws Exception {
-		User user = new User(111, "Ivan", "Ivanov", System.currentTimeMillis(), "Java developer", new String[] {"phone: +3809523432312"}); 
-		long rowId = mDatabaseWorker.addUser(user);
-		assertTrue(rowId > -1);
-	}
-	
-	@Test 
- 	public void testAddLocation() throws Exception {
-		GraphLocation location = GraphObject.Factory.create(GraphLocation.class);  
-		location.setCountry("Ukraine");
-		location.setCity("Kherson");
-		location.setStreet("Dimitrova");
-		location.setZip("73020");
-		location.setProperty("userId", 112);
-		assertThat(location.getCountry(), equalTo("Ukraine"));
-		//long rowId = mDatabaseWorker.addLocation(location);
-		//assertTrue(rowId > -1);
+	@Test
+	public void testGetCurrentUser() throws Exception {
+		User user = null;
+		String userId = mAppPref.getString(mActivity.getString(R.string.preference_user_id), null);
+		assertNotNull(userId);
+		assertNotNull(mDatabaseWorker);
+		user = mDatabaseWorker.getUser(userId);
+		assertNotNull(user);
+		assertNotNull(user.getId());
+		assertTrue(userId == user.getId());
 	}
 	
 	@Test
