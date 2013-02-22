@@ -16,9 +16,10 @@ public class Location implements GraphLocation {
 	private String mZip;
 	private double mLatitude;
 	private double mLongitude;
+	private String mUserId;
 	
 	public Location(String mCountry, String mState, String mCity,
-			String mStreet, String mZip, double mLatitude, double mLongitude) {
+			String mStreet, String mZip, double mLatitude, double mLongitude, String userId) {
 		super();
 		this.mCountry = mCountry;
 		this.mState = mState;
@@ -27,7 +28,7 @@ public class Location implements GraphLocation {
 		this.mZip = mZip;
 		this.mLatitude = mLatitude;
 		this.mLongitude = mLongitude;
-		
+		this.mUserId = userId;
 	}
 
 	/**
@@ -162,6 +163,20 @@ public class Location implements GraphLocation {
 	@Override
 	public void setLongitude(double longitude) {
 		mLongitude = longitude;
+	}
+
+	/**
+	 * @return the userId
+	 */
+	public String getUserId() {
+		return mUserId;
+	}
+
+	/**
+	 * @param userId the userId to set
+	 */
+	public void setUserId(String userId) {
+		this.mUserId = userId;
 	}
 
 }

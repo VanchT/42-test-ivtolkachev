@@ -26,7 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public static final String USER_FIRST_NAME = "userFirstName";
 	public static final String USER_MIDDLE_NAME = "userMiddleName";
 	public static final String USER_LAST_NAME = "userLastName";
-	public static final String USER_USERNAMEE = "userUsername";
+	public static final String USER_USERNAME = "userUsername";
 	public static final String USER_BIRTHDAY = "userBirthday";
 	public static final String USER_LINK = "userLink";
 	//Table Users
@@ -44,9 +44,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			+ USER_ID + " text primary key, " 
 			+ USER_NAME + " text , "
 			+ USER_FIRST_NAME + " text, "
-			+ USER_MIDDLE_NAME + " integer, "
+			+ USER_MIDDLE_NAME + " text, "
 			+ USER_LAST_NAME + " text, "
-			+ USER_USERNAMEE + " text, "
+			+ USER_USERNAME + " text, "
 			+ USER_BIRTHDAY + " text, "
 			+ USER_LINK + " text"
 			+ ");";
@@ -55,12 +55,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			+ LOCATION_ID + " integer primary key, " 
 			+ LOCATION_COUNTRY + " text, "
 			+ LOCATION_STATE + " text , "
-			+ LOCATION_CITY + " integer, "
+			+ LOCATION_CITY + " text, "
 			+ LOCATION_STREET + " text, "
 			+ LOCATION_ZIP + " text, "
-			+ LOCATION_LATITUDE + " integer, "
-			+ LOCATION_LONGITUDE + " integer, "
-			+ USER_ID + " text, "
+			+ LOCATION_LATITUDE + " real, "
+			+ LOCATION_LONGITUDE + " real, "
+			+ USER_ID + " text not null unique, "
 			+ "FOREIGN KEY (" + USER_ID + ") REFERENCES " + USERS_TABLE + " (" + USER_ID + ")"
 			+ ");";
 	

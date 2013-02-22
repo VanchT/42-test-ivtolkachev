@@ -20,8 +20,8 @@ public class User implements GraphUser {
 	private Location mLocation;
 
 	public User(String mId, String mName, String mFirstName,
-			String mMiddleName, String mLastName, String mLink,
-			String mUsername, String mBirthday) {
+			String mMiddleName, String mLastName,
+			String mUsername, String mBirthday, String mLink) {
 		super();
 		this.mId = mId;
 		this.mName = mName;
@@ -186,7 +186,5 @@ public class User implements GraphUser {
 	public void setLocation(GraphLocation location) {
 		mLocation = (Location)location;
 	}
-	
-	
 	
 }

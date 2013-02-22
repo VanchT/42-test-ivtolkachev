@@ -27,6 +27,13 @@ public class MainActivity extends Activity {
         mPreferences = getSharedPreferences(getString(R.string.app_preferences), 0);
         mDatabaseWorker = DatabaseWorker.getDatabaseWorker(this.getApplicationContext());
         mDatabaseWorker.openDatabase();
+        
+        //TODO: For testing	
+  		SharedPreferences.Editor editor = mPreferences.edit();
+  		editor.putString(getString(R.string.preference_user_id), "111");
+  		editor.commit();
+  		//
+        
         showUserData();
     }
     

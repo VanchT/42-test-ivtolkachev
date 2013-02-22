@@ -48,31 +48,28 @@ public class DatabaseWorkerTest {
 	
 	@Test 
  	public void testAddUser() throws Exception {
-		String userId = "111";
-		User user = new User(userId, "Иванов Иван Иванович", "Иван", "Иванович", "Иванов", "http://link", "IvanIvanov", "16.12.2012");
-		long rowId = mDatabaseWorker.addUser(user);
-		assertTrue(rowId > -1);
-		if (rowId > -1) {
-			SharedPreferences.Editor editor = mAppPref.edit();
-			editor.putString(mActivity.getString(R.string.preference_user_id), userId);
-			editor.commit();
-		}
+		String id = "111";
+		User user = new User(id, "Иванов Иван Иванович", "Иван", "Иванович", "Иванов", "http://link", "IvanIvanov", "16.12.2012");
+		String userId = mDatabaseWorker.addUser(user);
+		assertThat(userId, equalTo(id));
 	}
 	
 	@Test 
  	public void testAddLocation() throws Exception {
-		Location location = new Location("Ukraine", null, "Kherson", "Dimitrova", "73020", 0, 0); 
-		long rowId = mDatabaseWorker.addLocation(location, "111");
+		String id = "111";
+		Location location = new Location("Ukraine", null, "Kherson", "Dimitrova", "73020", 0, 0, id); 
+		long rowId = mDatabaseWorker.addLocation(location);
 		assertTrue(rowId > -1);
 	}
 	
 	@Test
 	public void testGetUserLocation() throws Exception {
-		GraphLocation location = null;
+		Location location = null;
 		String userId = mAppPref.getString(mActivity.getString(R.string.preference_user_id), null);
 		assertNotNull(userId);
-		location = mDatabaseWorker.getUserLocation(userId);
+		location = mDatabaseWorker.getLocation(userId);
 		assertNotNull(location);
+		assertThat(location.getUserId(), equalTo(userId));
 	}
 	
 	@Test
@@ -84,7 +81,7 @@ public class DatabaseWorkerTest {
 		user = mDatabaseWorker.getUser(userId);
 		assertNotNull(user);
 		assertNotNull(user.getId());
-		assertTrue(userId == user.getId());
+		assertThat(user.getId(), equalTo(userId));
 	}
 	
 	@Test
