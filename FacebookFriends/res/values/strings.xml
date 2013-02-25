@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">FacebookFriends</string>
-    <string name="app_id">148081905344290</string>
+    <string name="app_name">FBFriendsListApp</string>
+    <string name="app_id">480200108696000</string>
     <string name="menu_settings">Settings</string>
     
     <!-- MainActivity -->

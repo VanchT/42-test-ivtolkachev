@@ -1,4 +1,4 @@
-package com.ivtolkachev.facebookfriends.model;
+package com.ivtolkachev.fbfriendslistapp.model;
 
 import java.util.Map;
 
