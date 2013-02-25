@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- COMMON -->
     <string name="app_name">FBFriendsListApp</string>
     <string name="app_id">480200108696000</string>
     <string name="menu_settings">Settings</string>
+    <string name="no_data">No Data</string>
     
     <!-- MainActivity -->
-    <string name="me_name">Name</string>
-    <string name="me_surname">Surname</string>
     <string name="me_birth">Date of birth:</string>
-    <string name="me_bio">Bio:</string>
-    <string name="me_contacts">Contacts:</string>
+    <string name="me_location">Location:</string>
+    <string name="me_link">link:</string>
     <string name="me_image_description">Me</string>
+    <string name="me_country">Country</string>
+    <string name="me_state">State</string>
+    <string name="me_city">City</string>
+    <string name="me_street">Street</string>
+    <string name="me_zip">ZIP</string>
+    <string name="me_latitude">Latitude</string>
+    <string name="me_longitude">Longitude</string>
     
     <!-- PREFERENCES -->
     <string name="app_preferences">AppPreferences</string>

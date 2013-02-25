@@ -14,22 +14,27 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.ivtolkachev.facebookfriends.R;
-import com.ivtolkachev.facebookfriends.activity.MainActivity;
+import com.ivtolkachev.fbfriendslistapp.R;
+import com.ivtolkachev.fbfriendslistapp.activity.MainActivity;
 
 @RunWith(RobolectricTestRunner.class)
 public class MainActivityTest {
 	
 	private MainActivity mActivity;
-	private TextView mName;
-	private TextView mSurname;
-	private TextView mBirthday;
-	private TextView mLocation;
-	private TextView mUsername;
 	private ImageView mImage;
+	private TextView mName;
+	private TextView mUsername;
 	private TextView mBirthdayLable;
+	private TextView mBirthday;
+	private TextView mLink;
 	private TextView mLocationLable;
-	private TextView mUsernameLable;
+	private TextView mLocationCountry;
+	private TextView mLocationState;
+	private TextView mLocationCity;
+	private TextView mLocationStreet;
+	private TextView mLocationZip;
+	private TextView mLocationLatitude;
+	private TextView mLocationLongitude;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -39,20 +44,31 @@ public class MainActivityTest {
 		assertNotNull(mImage);
 		mName = (TextView)mActivity.findViewById(R.id.name_me);
 		assertNotNull(mName);
-		mSurname = (TextView)mActivity.findViewById(R.id.surname_me);
-		assertNotNull(mSurname);
-		mBirthday = (TextView)mActivity.findViewById(R.id.birthday_me);
-		assertNotNull(mBirthday);
+		mUsername = (TextView)mActivity.findViewById(R.id.username_me);
+		assertNotNull(mUsername);
 		mBirthdayLable = (TextView)mActivity.findViewById(R.id.birthday_me_lable);
 		assertNotNull(mBirthdayLable);
+		mBirthday = (TextView)mActivity.findViewById(R.id.birthday_me);
+		assertNotNull(mBirthday);
+		mLink = (TextView)mActivity.findViewById(R.id.link_me);
+		assertNotNull(mLink);
 		mLocationLable = (TextView)mActivity.findViewById(R.id.location_me_lable);
 		assertNotNull(mLocationLable);
-		mLocation = (TextView)mActivity.findViewById(R.id.location_me);
-		assertNotNull(mLocation);
-		mUsername = (TextView)mActivity.findViewById(R.id.lusername_me);
-		assertNotNull(mUsername);
-		mUsernameLable = (TextView)mActivity.findViewById(R.id.lusername_me_lable);
-		assertNotNull(mUsernameLable);
+		mLocationCountry = (TextView)mActivity.findViewById(R.id.location_country);
+		assertNotNull(mLocationCountry);
+		mLocationState = (TextView)mActivity.findViewById(R.id.location_state);
+		assertNotNull(mLocationState);
+		mLocationCity = (TextView)mActivity.findViewById(R.id.location_city);
+		assertNotNull(mLocationCity);
+		mLocationStreet= (TextView)mActivity.findViewById(R.id.location_street);
+		assertNotNull(mLocationStreet);
+		mLocationZip = (TextView)mActivity.findViewById(R.id.location_zip);
+		assertNotNull(mLocationZip);
+		mLocationLatitude = (TextView)mActivity.findViewById(R.id.location_latitude);
+		assertNotNull(mLocationLatitude);
+		mLocationLongitude = (TextView)mActivity.findViewById(R.id.location_longitede);
+		assertNotNull(mLocationLongitude);
+
 	}
 	
 	@Test
@@ -66,21 +82,31 @@ public class MainActivityTest {
 		final View origin = mActivity.getWindow().getDecorView();
 		ViewAsserts.assertOnScreen(origin, mImage);
 		ViewAsserts.assertOnScreen(origin, mName);
-		ViewAsserts.assertOnScreen(origin, mSurname);
-		ViewAsserts.assertOnScreen(origin, mBirthday);
-		ViewAsserts.assertOnScreen(origin, mLocation);
 		ViewAsserts.assertOnScreen(origin, mUsername);
 		ViewAsserts.assertOnScreen(origin, mBirthdayLable);
+		ViewAsserts.assertOnScreen(origin, mBirthday);
+		ViewAsserts.assertOnScreen(origin, mLink);
 		ViewAsserts.assertOnScreen(origin, mLocationLable);
-		ViewAsserts.assertOnScreen(origin, mUsernameLable);
+		ViewAsserts.assertOnScreen(origin, mLocationCountry);
+		ViewAsserts.assertOnScreen(origin, mLocationState);
+		ViewAsserts.assertOnScreen(origin, mLocationCity);
+		ViewAsserts.assertOnScreen(origin, mLocationStreet);
+		ViewAsserts.assertOnScreen(origin, mLocationZip);
+		ViewAsserts.assertOnScreen(origin, mLocationLatitude);
+		ViewAsserts.assertOnScreen(origin, mLocationLongitude);
 	}
 	
 	@Test
 	public void testViewsAlign() throws Exception {
 		final View origin = mActivity.getWindow().getDecorView();
 		ViewAsserts.assertLeftAligned(origin, mImage);
-		ViewAsserts.assertLeftAligned(origin, mLocationLable);
-		ViewAsserts.assertLeftAligned(origin, mLocation);
+	}
+	
+	@Test
+	public void testViewsContent() throws Exception {
+		final View origin = mActivity.getWindow().getDecorView();
+		assertThat(mBirthdayLable.getText().toString(), equalTo(mActivity.getString(R.string.me_birth)));
+		assertThat(mLocationLable.getText().toString(), equalTo(mActivity.getString(R.string.me_location)));
 	}
 
 }

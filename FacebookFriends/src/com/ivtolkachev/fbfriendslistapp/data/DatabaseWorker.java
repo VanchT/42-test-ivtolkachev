@@ -114,7 +114,9 @@ public class DatabaseWorker {
 			mDatabase.beginTransaction();
 			long row = mDatabase.insert(DatabaseHelper.USERS_TABLE, null, values);
 			if (row > 1 && user.getLocation() != null){
-				row = addLocation((Location)user.getLocation());
+				Location location = (Location)user.getLocation();
+				location.setUserId(user.getId());
+				row = addLocation(location);
 			}
 			if (row > -1) result = user.getId();
 			mDatabase.setTransactionSuccessful();

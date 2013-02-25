@@ -13,13 +13,11 @@ import org.robolectric.RobolectricTestRunner;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.facebook.model.GraphLocation;
-import com.facebook.model.GraphObject;
-import com.ivtolkachev.facebookfriends.R;
-import com.ivtolkachev.facebookfriends.activity.MainActivity;
-import com.ivtolkachev.facebookfriends.data.DatabaseWorker;
-import com.ivtolkachev.facebookfriends.model.Location;
-import com.ivtolkachev.facebookfriends.model.User;
+import com.ivtolkachev.fbfriendslistapp.R;
+import com.ivtolkachev.fbfriendslistapp.activity.MainActivity;
+import com.ivtolkachev.fbfriendslistapp.data.DatabaseWorker;
+import com.ivtolkachev.fbfriendslistapp.model.Location;
+import com.ivtolkachev.fbfriendslistapp.model.User;
 
 @RunWith(RobolectricTestRunner.class)
 public class DatabaseWorkerTest {
@@ -49,7 +47,7 @@ public class DatabaseWorkerTest {
 	@Test 
  	public void testAddUser() throws Exception {
 		String id = "111";
-		User user = new User(id, "Иванов Иван Иванович", "Иван", "Иванович", "Иванов", "http://link", "IvanIvanov", "16.12.2012");
+		User user = new User(id, "РРІР°РЅРѕРІ РРІР°РЅ РРІР°РЅРѕРІРёС‡", "РРІР°РЅ", "РРІР°РЅРѕРІРёС‡", "РРІР°РЅРѕРІ", "http://link", "IvanIvanov", "16.12.2012");
 		String userId = mDatabaseWorker.addUser(user);
 		assertThat(userId, equalTo(id));
 	}

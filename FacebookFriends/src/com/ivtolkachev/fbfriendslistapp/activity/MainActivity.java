@@ -10,39 +10,54 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
+import com.facebook.model.GraphLocation;
 import com.facebook.model.GraphUser;
 import com.ivtolkachev.fbfriendslistapp.R;
 import com.ivtolkachev.fbfriendslistapp.data.DatabaseWorker;
+import com.ivtolkachev.fbfriendslistapp.model.Location;
 import com.ivtolkachev.fbfriendslistapp.model.User;
 
 public class MainActivity extends Activity {
 	
+	private TextView mNoDataView;
+	private RelativeLayout mProfileView;
+	
 	private DatabaseWorker mDatabaseWorker;
 	private SharedPreferences mPreferences;
-	private GraphUser currentUser;
+	private GraphUser mCurrentUser;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
+        mNoDataView = (TextView)findViewById(R.id.profile_no_data);
+        mProfileView = (RelativeLayout)findViewById(R.id.profile_holder);
+        
         mPreferences = getSharedPreferences(getString(R.string.app_preferences), 0);
         mDatabaseWorker = DatabaseWorker.getDatabaseWorker(this.getApplicationContext());
         mDatabaseWorker.openDatabase();
-        printHashKey();
         authenticate();
     }
     
+    /**
+     * Prints Hash Key of the application.
+     */
     public void printHashKey() {
 	    try {
 	        PackageInfo info = getPackageManager().getPackageInfo("com.ivtolkachev.fbfriendslistapp",
@@ -119,6 +134,7 @@ public class MainActivity extends Activity {
             	  editor.putString(getString(R.string.preference_user_id), user.getId());
             	  editor.commit();
             	  mDatabaseWorker.addUser(user);
+            	  mCurrentUser = user;
             	  showUserData();
               } else {
             	  Log.d("MainActivityTag", "User data was not loaded!");
@@ -147,7 +163,7 @@ public class MainActivity extends Activity {
     		
 			protected void onPostExecute(User user) {
 				if (user != null) {
-					currentUser = user;
+					mCurrentUser = user;
 					showUserData();
 		    	} else {
 		    		//TODO: need send error message
@@ -157,7 +173,72 @@ public class MainActivity extends Activity {
     	}.execute();    	
     }  
      
+    /**
+     * Shows data about user on screen.
+     */
     private void showUserData() {
-    	Log.d("MainActivityTag", currentUser.toString());
+    	//TODO: This implementation may be changed in the future.
+    	if (mCurrentUser == null) {
+    		mProfileView.setVisibility(View.GONE);
+    		mNoDataView.setVisibility(View.VISIBLE);
+    	} else {
+	    	TextView nameView = (TextView)findViewById(R.id.name_me);
+	    	TextView usernameView = (TextView)findViewById(R.id.username_me);
+	    	TextView birthdayView = (TextView)findViewById(R.id.birthday_me);
+	    	TextView linkView = (TextView)findViewById(R.id.link_me);
+	    	
+	    	nameView.setText(mCurrentUser.getName());
+	    	usernameView.setText(mCurrentUser.getUsername());
+	    	if (mCurrentUser.getBirthday() == null){
+	    		((TextView)findViewById(R.id.birthday_me)).setVisibility(View.GONE);
+	    		birthdayView.setVisibility(View.GONE);
+	    	} else {
+	    		birthdayView.setText(mCurrentUser.getBirthday());
+	    	}
+	    	if (mCurrentUser.getLink() == null){
+	    		linkView.setVisibility(View.GONE);
+	    	} else {
+	    		linkView.setText(mCurrentUser.getLink());
+	    	}	    	
+	    	GraphLocation location = mCurrentUser.getLocation();
+	    	if (location != null) showLocation(location);
+	    		
+    	}
+    }
+    
+    /**
+     * Shows data about user location on screen.
+     * @param location object of GraphLocation type.
+     */
+    private void showLocation(GraphLocation location){
+    	//TODO: This implementation may be changed in the future.
+    	if (location.getCountry() != null) {
+    		((TextView)findViewById(R.id.location_country))
+    		.setText(getString(R.string.me_country) + ": " + location.getCountry());
+    	}
+    	if (location.getState() != null) {
+    		((TextView)findViewById(R.id.location_state))
+    		.setText(getString(R.string.me_state) + ": " + location.getState());
+    	}
+    	if (location.getCity() != null) {
+    		((TextView)findViewById(R.id.location_city))
+    		.setText(getString(R.string.me_city) + ": " + location.getCity());
+    	}
+    	if (location.getStreet() != null) {
+    		((TextView)findViewById(R.id.location_street))
+    		.setText(getString(R.string.me_street) + ": " + location.getStreet());
+    	}
+    	if (location.getZip() != null) {
+    		((TextView)findViewById(R.id.location_zip))
+    		.setText(getString(R.string.me_zip) + ": " + location.getZip());
+    	}
+    	if (location.getLatitude() != -1) {
+    		((TextView)findViewById(R.id.location_latitude))
+    		.setText(getString(R.string.me_latitude) + ": " + location.getLatitude());
+    	}
+    	if (location.getLongitude() != -1) {
+    		((TextView)findViewById(R.id.location_longitede))
+    		.setText(getString(R.string.me_longitude) + ": " + location.getLongitude());
+    	}
     }
 }
