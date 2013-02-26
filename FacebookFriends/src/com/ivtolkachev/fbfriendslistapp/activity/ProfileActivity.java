@@ -211,7 +211,7 @@ public class ProfileActivity extends Activity {
     }
 	
     private void buildAlertDialogNoConnection(){
-    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
     	builder.setPositiveButton(R.string.button_retry, new DialogInterface.OnClickListener() {
     	           public void onClick(DialogInterface dialog, int id) {
     	        	   loadUserData();
