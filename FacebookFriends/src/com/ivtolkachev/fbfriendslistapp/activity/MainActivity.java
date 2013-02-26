@@ -2,6 +2,8 @@ package com.ivtolkachev.fbfriendslistapp.activity;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -17,6 +19,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -27,12 +31,16 @@ import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.model.GraphLocation;
 import com.facebook.model.GraphUser;
+import com.facebook.widget.ProfilePictureView;
 import com.ivtolkachev.fbfriendslistapp.R;
 import com.ivtolkachev.fbfriendslistapp.data.DatabaseWorker;
 import com.ivtolkachev.fbfriendslistapp.model.Location;
 import com.ivtolkachev.fbfriendslistapp.model.User;
 
 public class MainActivity extends Activity {
+	
+	private static final String TAG = "MainActivityTag";
+	//private static final List<String> PERMISSIONS = Arrays.asList("publish_actions");
 	
 	private TextView mNoDataView;
 	private RelativeLayout mProfileView;
@@ -65,8 +73,7 @@ public class MainActivity extends Activity {
 	        for (Signature signature : info.signatures) {
 	            MessageDigest md = MessageDigest.getInstance("SHA");
 	            md.update(signature.toByteArray());
-	            Log.d("MainActivityTag",
-	                    Base64.encodeToString(md.digest(), Base64.DEFAULT));
+	            Log.d(TAG, Base64.encodeToString(md.digest(), Base64.DEFAULT));
 	        }
 	    } catch (NameNotFoundException e) {
 	
@@ -101,21 +108,27 @@ public class MainActivity extends Activity {
     	mDatabaseWorker.openDatabase();
     }  
     
+    private void onSessionOpened(Session session){
+    	loadUserData(session);
+    }
+    
     /**
      * Authenticates the user if it need.
      */
-    private void authenticate(){
+    private void authenticate(){    	
     	Session.openActiveSession(this, true, new Session.StatusCallback() {
 
-    	      @Override
-    	      public void call(Session session, SessionState state, Exception exception) {
-    	        if (session.isOpened()) {
-    	        	loadUserData(session);    	          
-    	        } else {
-    	        	//loadUserDataFromDatabase();
-    	        }
-    	      }
-    	    });
+    		@Override
+    		public void call(Session session, SessionState state, Exception exception) {
+    			if (session.isOpened()) {
+    				Log.d(TAG, "Session is opened");
+    				onSessionOpened(session);
+    			} else {
+    				Log.d(TAG, "Session is not opened");
+    				loadUserDataFromDatabase();
+    			}
+    		}
+    	});
     }
     
     /**
@@ -126,29 +139,40 @@ public class MainActivity extends Activity {
     	Log.d("MainActivityTag", "Try load from server.");
     	Request.executeMeRequestAsync(session, new Request.GraphUserCallback() {
 
-            @Override
-            public void onCompleted(GraphUser user, Response response) {
-              if (user != null) {
-            	  Log.d("MainActivityTag", "User data was loaded.");
-            	  SharedPreferences.Editor editor = mPreferences.edit();
-            	  editor.putString(getString(R.string.preference_user_id), user.getId());
-            	  editor.commit();
-            	  mDatabaseWorker.addUser(user);
-            	  mCurrentUser = user;
-            	  showUserData();
-              } else {
-            	  Log.d("MainActivityTag", "User data was not loaded!");
-            	  //TODO: need send some error massege
-              }
-            }
-          });
+    		@Override
+    		public void onCompleted(GraphUser user, Response response) {
+    			if (response.getError() != null) {
+    				Log.e(TAG, response.getError().getErrorMessage());
+    			}
+    			Log.d(TAG, "Request = " + response.getRequest().toString());
+    			Log.d(TAG, "Responce = " + response.toString());
+    			
+    			
+    			if (user != null) {
+    				Log.d("MainActivityTag", "User data was loaded.");
+    				SharedPreferences.Editor editor = mPreferences.edit();
+    				editor.putString(getString(R.string.preference_user_id), user.getId());
+    				editor.commit();
+    				mDatabaseWorker.addUser(user);
+    				mCurrentUser = user;
+    				Log.d(TAG, "Current user = " + user.toString());
+    				Log.d(TAG, "JSON = " + user.getInnerJSONObject().toString());
+    				showUserData();
+    			} else {
+    				Log.d(TAG, "User data was not loaded!");
+    				loadUserDataFromDatabase();
+    				//TODO: need send some error massege
+    			}
+    		}
+    		
+    	});
     }
     
     /**
      * Loads user data from database.
      */
     private void loadUserDataFromDatabase(){  
-    	Log.d("MainActivityTag", "Try load from database.");
+    	Log.d(TAG, "Try load from database.");
     	new AsyncTask<Void, Void, User>(){
 
 			@Override
@@ -186,23 +210,27 @@ public class MainActivity extends Activity {
 	    	TextView usernameView = (TextView)findViewById(R.id.username_me);
 	    	TextView birthdayView = (TextView)findViewById(R.id.birthday_me);
 	    	TextView linkView = (TextView)findViewById(R.id.link_me);
+	    	ProfilePictureView profilePicture = (ProfilePictureView)findViewById(R.id.profile_pic);
 	    	
+	    	profilePicture.setProfileId(mCurrentUser.getId());
 	    	nameView.setText(mCurrentUser.getName());
 	    	usernameView.setText(mCurrentUser.getUsername());
 	    	if (mCurrentUser.getBirthday() == null){
-	    		((TextView)findViewById(R.id.birthday_me)).setVisibility(View.GONE);
 	    		birthdayView.setVisibility(View.GONE);
 	    	} else {
+	    		((TextView)findViewById(R.id.birthday_me_lable)).setVisibility(View.VISIBLE);
 	    		birthdayView.setText(mCurrentUser.getBirthday());
 	    	}
 	    	if (mCurrentUser.getLink() == null){
 	    		linkView.setVisibility(View.GONE);
 	    	} else {
-	    		linkView.setText(mCurrentUser.getLink());
+	    		linkView.setText(getString(R.string.me_link) + ": " + mCurrentUser.getLink());
 	    	}	    	
 	    	GraphLocation location = mCurrentUser.getLocation();
-	    	if (location != null) showLocation(location);
-	    		
+	    	if (location != null) {
+	    		((TextView)findViewById(R.id.location_me_lable)).setVisibility(View.VISIBLE);
+	    		showLocation(location);
+	    	}
     	}
     }
     
@@ -241,4 +269,5 @@ public class MainActivity extends Activity {
     		.setText(getString(R.string.me_longitude) + ": " + location.getLongitude());
     	}
     }
+
 }

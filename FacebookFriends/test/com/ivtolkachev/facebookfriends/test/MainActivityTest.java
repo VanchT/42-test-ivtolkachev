@@ -40,7 +40,7 @@ public class MainActivityTest {
 	public void setUp() throws Exception {
 		mActivity = new MainActivity();
 		mActivity.create();
-		mImage = (ImageView)mActivity.findViewById(R.id.image_me);
+		mImage = (ImageView)mActivity.findViewById(R.id.profile_pic);
 		assertNotNull(mImage);
 		mName = (TextView)mActivity.findViewById(R.id.name_me);
 		assertNotNull(mName);
