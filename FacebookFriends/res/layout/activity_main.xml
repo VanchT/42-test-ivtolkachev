@@ -9,7 +9,7 @@
         android:id="@+id/profile_button"
         android:layout_width="@dimen/button_width"
         android:layout_height="@dimen/button_height"
-        android:background="@color/com_facebook_blue"
+        android:background ="@color/com_facebook_blue"
         android:textColor="@color/button_text_color"
         android:text="@string/button_profile"
         android:layout_gravity="center_horizontal"

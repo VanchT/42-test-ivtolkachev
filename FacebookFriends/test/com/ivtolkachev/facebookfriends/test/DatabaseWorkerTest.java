@@ -13,8 +13,9 @@ import org.robolectric.RobolectricTestRunner;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.facebook.Session;
 import com.ivtolkachev.fbfriendslistapp.R;
-import com.ivtolkachev.fbfriendslistapp.activity.MainActivity;
+import com.ivtolkachev.fbfriendslistapp.activity.ProfileActivity;
 import com.ivtolkachev.fbfriendslistapp.data.DatabaseWorker;
 import com.ivtolkachev.fbfriendslistapp.model.Location;
 import com.ivtolkachev.fbfriendslistapp.model.User;
@@ -22,18 +23,17 @@ import com.ivtolkachev.fbfriendslistapp.model.User;
 @RunWith(RobolectricTestRunner.class)
 public class DatabaseWorkerTest {
 		
-	private MainActivity mActivity;
+	private ProfileActivity mActivity;
 	private DatabaseWorker mDatabaseWorker;
-	private SharedPreferences mAppPref;
 	
 	@Before
 	public void setUp() throws Exception {
-		mActivity = new MainActivity();
+		mActivity = new ProfileActivity();
+		Session session = new Session.Builder(mActivity).setApplicationId(mActivity.getString(R.string.app_id)).build();
+		Session.setActiveSession(session);
 		mActivity.create();
 		mDatabaseWorker = DatabaseWorker.getDatabaseWorker(mActivity.getApplicationContext());
 		assertNotNull(mDatabaseWorker);
-		mAppPref = mActivity.getSharedPreferences(mActivity.getString(R.string.app_preferences), 0);
-		assertNotNull(mAppPref);
 	}
 	
 	@Test
@@ -63,8 +63,7 @@ public class DatabaseWorkerTest {
 	@Test
 	public void testGetUserLocation() throws Exception {
 		Location location = null;
-		String userId = mAppPref.getString(mActivity.getString(R.string.preference_user_id), null);
-		assertNotNull(userId);
+		String userId = "111";
 		location = mDatabaseWorker.getLocation(userId);
 		assertNotNull(location);
 		assertThat(location.getUserId(), equalTo(userId));
@@ -73,7 +72,7 @@ public class DatabaseWorkerTest {
 	@Test
 	public void testGetCurrentUser() throws Exception {
 		User user = null;
-		String userId = mAppPref.getString(mActivity.getString(R.string.preference_user_id), null);
+		String userId = "111";
 		assertNotNull(userId);
 		assertNotNull(mDatabaseWorker);
 		user = mDatabaseWorker.getUser(userId);

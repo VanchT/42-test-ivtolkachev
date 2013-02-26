@@ -2,6 +2,7 @@ package com.ivtolkachev.fbfriendslistapp.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -63,6 +64,11 @@ public class ProfileActivity extends Activity {
         
         loadUserData();
 	}
+	
+	//TODO: The method added for testing.
+    public void create(){
+    	onCreate(null);
+    }
 	
 	private void loadUserData(){
 		Session session = Session.getActiveSession();
@@ -211,7 +217,7 @@ public class ProfileActivity extends Activity {
     }
 	
     private void buildAlertDialogNoConnection(){
-    	AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
     	builder.setPositiveButton(R.string.button_retry, new DialogInterface.OnClickListener() {
     	           public void onClick(DialogInterface dialog, int id) {
     	        	   loadUserData();
@@ -225,7 +231,6 @@ public class ProfileActivity extends Activity {
     	builder.setMessage(R.string.connection_alert);
     	AlertDialog dialog = builder.create();
     	dialog.show();
-    			
     }
     
 	@Override

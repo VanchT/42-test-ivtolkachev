@@ -177,6 +177,7 @@ public class DatabaseWorker {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		user.setLocation(getLocation(user.getId()));
 		return user;
 	}
 	

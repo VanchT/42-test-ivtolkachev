@@ -124,7 +124,7 @@ public class MainActivity extends Activity {
 
     private void buildAlertDialogNoConnection(){
 
-    	AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
     	builder.setPositiveButton(R.string.button_retry, new DialogInterface.OnClickListener() {
     	           public void onClick(DialogInterface dialog, int id) {
     	        	   authenticate();
