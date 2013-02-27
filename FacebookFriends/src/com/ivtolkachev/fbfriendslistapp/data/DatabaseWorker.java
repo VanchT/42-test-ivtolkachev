@@ -1,23 +1,14 @@
 package com.ivtolkachev.fbfriendslistapp.data;
 
-import java.util.ArrayList;
-import java.util.concurrent.locks.AbstractQueuedLongSynchronizer;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.facebook.model.GraphUser;
-import com.ivtolkachev.fbfriendslistapp.model.Location;
-import com.ivtolkachev.fbfriendslistapp.model.User;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.provider.ContactsContract.Contacts.Data;
 import android.util.Log;
+
+import com.ivtolkachev.fbfriendslistapp.model.Location;
+import com.ivtolkachev.fbfriendslistapp.model.User;
 
 public class DatabaseWorker {
 
@@ -99,7 +90,7 @@ public class DatabaseWorker {
 	 * @param user
 	 * @return
 	 */
-	public synchronized String addUser(GraphUser user) {
+	public synchronized String addUser(User user) {
 		String result = null;
 		ContentValues values = new ContentValues();
 		values.put(DatabaseHelper.USER_ID, user.getId());

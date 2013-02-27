@@ -11,6 +11,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -124,22 +125,9 @@ public class MainActivity extends Activity {
     	});
     }
 
-    private void buildAlertDialogNoConnection(){
-
-    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    	builder.setPositiveButton(R.string.button_retry, new DialogInterface.OnClickListener() {
-    	           public void onClick(DialogInterface dialog, int id) {
-    	        	   authenticate();
-    	           }
-    	       });
-    	builder.setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
-    	           public void onClick(DialogInterface dialog, int id) {
-    	        	   finish();
-    	           }
-    	       });
-    	builder.setMessage(R.string.connection_alert);
-    	AlertDialog dialog = builder.create();
-    	dialog.show();
-    			
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+    	super.onConfigurationChanged(newConfig);
+    	
     }
 }
