@@ -17,6 +17,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.PermissionInfo;
 import android.os.Bundle;
 import android.test.ViewAsserts;
@@ -38,10 +39,7 @@ public class MainActivityTest {
 	@Before
 	public void setUp(){
 		mActivity = new MainActivity();
-		Session session = new Session.Builder(mActivity).setApplicationId(mActivity.getString(R.string.app_id)).build();
-		Session.setActiveSession(session);
 		mActivity.create();
-		
 		mProfileButton = (Button)mActivity.findViewById(R.id.profile_button);
 		assertNotNull(mProfileButton);
 		mFriendsButton = (Button)mActivity.findViewById(R.id.friends_button);
@@ -53,7 +51,7 @@ public class MainActivityTest {
 		PackageInfo packageInfo = mActivity.getPackageManager().getPackageInfo(
 				mActivity.getComponentName().toString(), PackageManager.GET_META_DATA);
 		Bundle metaData = packageInfo.applicationInfo.metaData;
-		String origin = metaData.getString("com.facebook.sdk.ApplicationId");
+		String origin = metaData.getString(Session.APPLICATION_ID_PROPERTY);
 		assertThat(origin, equalTo(mActivity.getString(R.string.app_id)));
 	}
 	

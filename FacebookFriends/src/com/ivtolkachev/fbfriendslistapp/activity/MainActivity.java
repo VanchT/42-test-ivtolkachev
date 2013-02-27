@@ -110,7 +110,9 @@ public class MainActivity extends Activity {
     /**
      * Authenticates the user if it need.
      */
-    private void authenticate(){    	
+    private void authenticate(){    
+    	Session session = new Session.Builder(this).setApplicationId(getString(R.string.app_id)).build();
+		Session.setActiveSession(session);
     	Session.openActiveSession(this, true, new Session.StatusCallback() {
 
     		@Override
