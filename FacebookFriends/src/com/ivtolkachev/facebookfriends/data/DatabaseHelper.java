@@ -66,7 +66,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		} 
 		Log.d(TAG, "Today is " + date.getTime());
 		
-		db.execSQL("INSERT INTO " + USERS_TABLE + " VALUES (120, 'Иван', 'Толкачёв', " + date.getTime() 
+		db.execSQL("INSERT INTO " + USERS_TABLE + " VALUES (120, 'РРІР°РЅ', 'РРІР°РЅРѕРІ', " + date.getTime() 
 				+ ", 'Android developer from Kherson'," 
 				+ " 'email: ivtolkachev@gmail.com;skype: john_pilgrim_midnight_warrior;jabber: ivtolkachev@jabber.org;phone: +380950731193')");
 	}
