@@ -33,7 +33,6 @@ public class ProfileActivity extends Activity {
 	private static final String TAG = "ProfileActivityTag";
 	private static final int REAUTH_ACTIVITY_CODE = 100;
 	
-	private UiLifecycleHelper uiHelper;
 	private TextView mNoDataView;
 	private RelativeLayout mProfileView;
 	
@@ -41,20 +40,11 @@ public class ProfileActivity extends Activity {
 	private SharedPreferences mPreferences;
 	private User mCurrentUser;
 	
-	private Session.StatusCallback callback = new Session.StatusCallback() {
-	    @Override
-	    public void call(final Session session, final SessionState state, final Exception exception) {
-	        onSessionStateChange(session, state, exception);
-	    }
-	};
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_profile);
-		
-		uiHelper = new UiLifecycleHelper(this, callback);
-	    uiHelper.onCreate(savedInstanceState);
 	    
 	    mNoDataView = (TextView)findViewById(R.id.profile_no_data);
         mProfileView = (RelativeLayout)findViewById(R.id.profile_holder);
@@ -78,6 +68,7 @@ public class ProfileActivity extends Activity {
             makeMeRequest(session);
         } else {
         	Log.d(TAG, "session is not opened");
+        	showUserData();
         }
 
 	}
@@ -95,7 +86,7 @@ public class ProfileActivity extends Activity {
 	                if (user != null) {
 	                	Log.d(TAG, "User data was loaded.");
 	    				SharedPreferences.Editor editor = mPreferences.edit();
-	    				editor.putString(getString(R.string.preference_user_id), user.getId());
+	    				editor.putString(getString(R.string.pref_user_id), user.getId());
 	    				editor.commit();
 	    				mCurrentUser = new User(user);
 	    				mDatabaseWorker.addUser(mCurrentUser);
@@ -113,11 +104,6 @@ public class ProfileActivity extends Activity {
 	    request.executeAsync();
 	} 
 	
-	private void onSessionStateChange(final Session session, SessionState state, Exception exception) {
-	    if (session != null && session.isOpened()) {
-	        makeMeRequest(session);
-	    }
-	}
     
     /**
      * Loads user data from database.
@@ -127,7 +113,7 @@ public class ProfileActivity extends Activity {
 
 			@Override
 			protected User doInBackground(Void... params) {
-				String userId = mPreferences.getString(getString(R.string.preference_user_id), null);
+				String userId = mPreferences.getString(getString(R.string.pref_user_id), null);
 				User user = null;
 				if (userId != null) {
 					Log.d(TAG, "Try load from database");
@@ -245,27 +231,22 @@ public class ProfileActivity extends Activity {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 	    super.onActivityResult(requestCode, resultCode, data);
-	    if (requestCode == REAUTH_ACTIVITY_CODE) {
-	        uiHelper.onActivityResult(requestCode, resultCode, data);
-	    }
+	    Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
 	}
 	
 	@Override
 	public void onResume() {
 	    super.onResume();
-	    uiHelper.onResume();
 	}
 
 	@Override
 	public void onSaveInstanceState(Bundle bundle) {
 	    super.onSaveInstanceState(bundle);
-	    uiHelper.onSaveInstanceState(bundle);
 	}
 
 	@Override
 	public void onPause() {
 	    super.onPause();
-	    uiHelper.onPause();
 	}
 	
 	@Override
@@ -277,7 +258,6 @@ public class ProfileActivity extends Activity {
 	@Override
 	public void onDestroy() {
 	    super.onDestroy();
-	    uiHelper.onDestroy();
 	}
 	
 }

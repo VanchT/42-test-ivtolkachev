@@ -3,10 +3,12 @@ package com.ivtolkachev.fbfriendslistapp.activity;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import android.R.bool;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -16,6 +18,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -30,6 +33,7 @@ public class MainActivity extends Activity {
 	
 	private Button mProfileButton;
 	private Button mFriendsButton;
+	private SharedPreferences mPreferences;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +42,14 @@ public class MainActivity extends Activity {
         
         mProfileButton = (Button)findViewById(R.id.profile_button);
         mFriendsButton = (Button)findViewById(R.id.friends_button);
-        setListeners();
-        authenticate();
+        
+        mPreferences = getSharedPreferences(getString(R.string.app_preferences), 0);
+        
+        setListeners();   
+        boolean isConnected = mPreferences.getBoolean(getString(R.string.pref_fb_connection), false);
+        if (!isConnected) {
+        	checkFacebookConnection();
+        }
         
     }    
     
@@ -98,6 +108,19 @@ public class MainActivity extends Activity {
     }
     
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	
+    	switch (item.getItemId()) {
+			case R.id.menu_fb_connection:
+				authenticate();
+				return true;
+	
+			default:
+				return super.onOptionsItemSelected(item);
+		}
+    }
+    
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
@@ -108,26 +131,61 @@ public class MainActivity extends Activity {
     	super.onStop();
     }  
     
+    private void checkFacebookConnection(){
+    	Session session = new Session.Builder(this).setApplicationId(getString(R.string.app_id)).build();
+		Session.setActiveSession(session);
+		if (!session.isOpened()){
+			buildAlertDialogConnectionProposal();
+		}
+    }
+    
     /**
      * Authenticates the user if it need.
      */
-    private void authenticate(){    
-    	Session session = new Session.Builder(this).setApplicationId(getString(R.string.app_id)).build();
-		Session.setActiveSession(session);
+    private void authenticate() {
+    	PackageInfo packageInfo = null;
+		try {
+			packageInfo = this.getPackageManager().getPackageInfo(
+					this.getComponentName().toShortString(), PackageManager.GET_META_DATA);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (packageInfo != null) {
+			Bundle metaData = packageInfo.applicationInfo.metaData;
+			String appId = metaData.getString(Session.APPLICATION_ID_PROPERTY);
+			if (appId == null){
+				metaData.putString(Session.APPLICATION_ID_PROPERTY, getString(R.string.app_id));
+			}
+		}
     	Session.openActiveSession(this, true, new Session.StatusCallback() {
 
     		@Override
     		public void call(Session session, SessionState state, Exception exception) {
     			if (session.isOpened()) {
+    				SharedPreferences.Editor editor = mPreferences.edit();
+    				editor.putBoolean(getString(R.string.pref_fb_connection), true);
+    				editor.commit();
     				Log.d(TAG, "Session is opened");
     			} 
     		}
     	});
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-    	super.onConfigurationChanged(newConfig);
-    	
+
+    private void buildAlertDialogConnectionProposal(){
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	builder.setPositiveButton(R.string.button_yes, new DialogInterface.OnClickListener() {
+    	           public void onClick(DialogInterface dialog, int id) {
+    	        	   authenticate();
+    	           }
+    	       });
+    	builder.setNegativeButton(R.string.button_no, new DialogInterface.OnClickListener() {
+    	           public void onClick(DialogInterface dialog, int id) {
+    	        	   dialog.dismiss();
+    	           }
+    	       });
+    	builder.setMessage(R.string.connection_proposal);
+    	AlertDialog dialog = builder.create();
+    	dialog.show();
     }
 }

@@ -99,7 +99,7 @@ public class DatabaseWorker {
 		values.put(DatabaseHelper.USER_MIDDLE_NAME, user.getMiddleName());
 		values.put(DatabaseHelper.USER_LAST_NAME, user.getLastName());
 		values.put(DatabaseHelper.USER_USERNAME, user.getUsername());
-		values.put(DatabaseHelper.USER_LINK, user.getLink());
+		values.put(DatabaseHelper.USER_LINK, "@"+user.getLink());
 		values.put(DatabaseHelper.USER_BIRTHDAY, user.getBirthday());
 		try {
 			mDatabase.beginTransaction();
