@@ -1,15 +1,8 @@
 package com.ivtolkachev.fbfriendslistapp.data;
 
-import java.util.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 	
@@ -28,17 +21,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public static final String USER_LAST_NAME = "userLastName";
 	public static final String USER_USERNAME = "userUsername";
 	public static final String USER_BIRTHDAY = "userBirthday";
-	public static final String USER_LINK = "userLink";
-	//Table Users
-	public static final String LOCATION_ID = "locationId";
-	public static final String LOCATION_COUNTRY = "country";
-	public static final String LOCATION_STATE = "state";
-	public static final String LOCATION_CITY = "city";
-	public static final String LOCATION_STREET = "street";
-	public static final String LOCATION_ZIP = "zip";
-	public static final String LOCATION_LATITUDE = "latitude";
-	public static final String LOCATION_LONGITUDE = "longitude";
-	
+	public static final String USER_LINK = "userLink";	
 	
 	private static final String CREATE_USERS_TABLE_STRING = "(" 
 			+ USER_ID + " text primary key, " 
@@ -51,19 +34,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			+ USER_LINK + " text"
 			+ ");";
 	
-	private static final String CREATE_LOCATIONS_TABLE_STRING = "(" 
-			+ LOCATION_ID + " integer primary key, " 
-			+ LOCATION_COUNTRY + " text, "
-			+ LOCATION_STATE + " text , "
-			+ LOCATION_CITY + " text, "
-			+ LOCATION_STREET + " text, "
-			+ LOCATION_ZIP + " text, "
-			+ LOCATION_LATITUDE + " real, "
-			+ LOCATION_LONGITUDE + " real, "
-			+ USER_ID + " text not null unique, "
-			+ "FOREIGN KEY (" + USER_ID + ") REFERENCES " + USERS_TABLE + " (" + USER_ID + ")"
-			+ ");";
-	
 	public DatabaseHelper(Context context) {
 		super(context, DB_NAME, null, 1);
 	}
@@ -71,7 +41,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL(CREATE_TABLE + USERS_TABLE + CREATE_USERS_TABLE_STRING);
-		db.execSQL(CREATE_TABLE + LOCATIONS_TABLE + CREATE_LOCATIONS_TABLE_STRING);
 	}
 
 	@Override

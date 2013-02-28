@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
-import com.ivtolkachev.fbfriendslistapp.model.Location;
 import com.ivtolkachev.fbfriendslistapp.model.User;
 
 public class DatabaseWorker {
@@ -63,30 +62,6 @@ public class DatabaseWorker {
 	
 	/**
 	 * 
-	 * @param location
-	 * @return
-	 */
-	public synchronized long addLocation(Location location){
-		long rowId = -1;
-		ContentValues values = new ContentValues();
-		values.put(DatabaseHelper.LOCATION_COUNTRY, location.getCountry());
-		values.put(DatabaseHelper.LOCATION_STATE, location.getState());
-		values.put(DatabaseHelper.LOCATION_CITY, location.getCity());
-		values.put(DatabaseHelper.LOCATION_STREET, location.getStreet());
-		values.put(DatabaseHelper.LOCATION_ZIP, location.getZip());
-		values.put(DatabaseHelper.LOCATION_LATITUDE, location.getLatitude());
-		values.put(DatabaseHelper.LOCATION_LONGITUDE, location.getLongitude());
-		values.put(DatabaseHelper.USER_ID, location.getUserId());
-		try {
-			rowId = mDatabase.insert(DatabaseHelper.LOCATIONS_TABLE, null, values);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return rowId;				
-	}
-	
-	/**
-	 * 
 	 * @param user
 	 * @return
 	 */
@@ -99,50 +74,15 @@ public class DatabaseWorker {
 		values.put(DatabaseHelper.USER_MIDDLE_NAME, user.getMiddleName());
 		values.put(DatabaseHelper.USER_LAST_NAME, user.getLastName());
 		values.put(DatabaseHelper.USER_USERNAME, user.getUsername());
-		values.put(DatabaseHelper.USER_LINK, "@"+user.getLink());
+		values.put(DatabaseHelper.USER_LINK, user.getLink());
 		values.put(DatabaseHelper.USER_BIRTHDAY, user.getBirthday());
 		try {
-			mDatabase.beginTransaction();
 			long row = mDatabase.insert(DatabaseHelper.USERS_TABLE, null, values);
-			if (row > 1 && user.getLocation() != null){
-				Location location = (Location)user.getLocation();
-				location.setUserId(user.getId());
-				row = addLocation(location);
-			}
 			if (row > -1) result = user.getId();
-			mDatabase.setTransactionSuccessful();
-			mDatabase.endTransaction();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return result;
-	}
-	
-	/**
-	 * 
-	 * @param userId
-	 * @return
-	 */
-	public synchronized Location getLocation(String userId) {
-		Location location = null;
-		try {
-			Cursor cursor = mDatabase.query(DatabaseHelper.LOCATIONS_TABLE, null,
-					DatabaseHelper.USER_ID + "=" + userId, null, null, null, null);
-			if (cursor.moveToNext()) {
-				location = new Location(
-						cursor.getString(1), 
-						cursor.getString(2), 
-						cursor.getString(3), 
-						cursor.getString(4), 
-						cursor.getString(5), 
-						cursor.getDouble(6), 
-						cursor.getDouble(7), 
-						cursor.getString(8));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return location;
 	}
 	
 	/**
@@ -168,7 +108,6 @@ public class DatabaseWorker {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		user.setLocation(getLocation(user.getId()));
 		return user;
 	}
 	
