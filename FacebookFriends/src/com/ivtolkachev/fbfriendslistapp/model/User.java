@@ -17,7 +17,6 @@ public class User {
 	private String mLink;
 	private String mUsername;
 	private String mBirthday;
-	private Location mLocation;
 
 	public User(String mId, String mName, String mFirstName,
 			String mMiddleName, String mLastName,
@@ -42,9 +41,6 @@ public class User {
 		this.mLink = graphUser.getLink();
 		this.mUsername = graphUser.getUsername();
 		this.mBirthday = graphUser.getBirthday();
-		if (graphUser.getLocation() != null) {
-			this.mLocation = new Location(graphUser.getLocation(), mId);
-		}
 	}
 
 	public String getId() {
@@ -112,12 +108,4 @@ public class User {
 		mBirthday = birthday;
 	}
 
-	public Location getLocation() {
-		return mLocation;
-	}
-
-	public void setLocation(Location location) {
-		mLocation = location;
-	}
-	
 }

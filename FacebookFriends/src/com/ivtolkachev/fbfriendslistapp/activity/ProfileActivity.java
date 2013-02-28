@@ -1,8 +1,11 @@
+/**
+ * This code is need for 4th ticket!
+ */
+
 package com.ivtolkachev.fbfriendslistapp.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Application;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,20 +21,15 @@ import android.widget.TextView;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.UiLifecycleHelper;
-import com.facebook.model.GraphLocation;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.ProfilePictureView;
 import com.ivtolkachev.fbfriendslistapp.R;
 import com.ivtolkachev.fbfriendslistapp.data.DatabaseWorker;
-import com.ivtolkachev.fbfriendslistapp.model.Location;
 import com.ivtolkachev.fbfriendslistapp.model.User;
 
 public class ProfileActivity extends Activity {
 	
 	private static final String TAG = "ProfileActivityTag";
-	private static final int REAUTH_ACTIVITY_CODE = 100;
 	
 	private TextView mNoDataView;
 	private RelativeLayout mProfileView;
@@ -44,7 +42,7 @@ public class ProfileActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_profile);
+		setContentView(R.layout.activity_main);
 	    
 	    mNoDataView = (TextView)findViewById(R.id.profile_no_data);
         mProfileView = (RelativeLayout)findViewById(R.id.profile_holder);
@@ -167,50 +165,9 @@ public class ProfileActivity extends Activity {
 	    	             "<a href=\""+ mCurrentUser.getLink() + "\"><b>"+ getString(R.string.me_link) + "</b></a> "));
 	    		linkView.setMovementMethod(LinkMovementMethod.getInstance());
 	    	}	    	
-	    	Location location = mCurrentUser.getLocation();
-	    	if (location != null) {
-	    		((TextView)findViewById(R.id.location_me_lable)).setVisibility(View.VISIBLE);
-	    		showLocation(location);
-	    	}
     	}
     }
-    
-    /**
-     * Shows data about user location on screen.
-     * @param location object of GraphLocation type.
-     */
-    private void showLocation(Location location){
-    	//TODO: This implementation may be changed in the future.
-    	if (location.getCountry() != null) {
-    		((TextView)findViewById(R.id.location_country))
-    		.setText(getString(R.string.me_country) + ": " + location.getCountry());
-    	}
-    	if (location.getState() != null) {
-    		((TextView)findViewById(R.id.location_state))
-    		.setText(getString(R.string.me_state) + ": " + location.getState());
-    	}
-    	if (location.getCity() != null) {
-    		((TextView)findViewById(R.id.location_city))
-    		.setText(getString(R.string.me_city) + ": " + location.getCity());
-    	}
-    	if (location.getStreet() != null) {
-    		((TextView)findViewById(R.id.location_street))
-    		.setText(getString(R.string.me_street) + ": " + location.getStreet());
-    	}
-    	if (location.getZip() != null) {
-    		((TextView)findViewById(R.id.location_zip))
-    		.setText(getString(R.string.me_zip) + ": " + location.getZip());
-    	}
-    	if (location.getLatitude() != -1) {
-    		((TextView)findViewById(R.id.location_latitude))
-    		.setText(getString(R.string.me_latitude) + ": " + location.getLatitude());
-    	}
-    	if (location.getLongitude() != -1) {
-    		((TextView)findViewById(R.id.location_longitede))
-    		.setText(getString(R.string.me_longitude) + ": " + location.getLongitude());
-    	}
-    }
-	
+    	
     private void buildAlertDialogNoConnection(){
     	AlertDialog.Builder builder = new AlertDialog.Builder(this);
     	builder.setPositiveButton(R.string.button_retry, new DialogInterface.OnClickListener() {

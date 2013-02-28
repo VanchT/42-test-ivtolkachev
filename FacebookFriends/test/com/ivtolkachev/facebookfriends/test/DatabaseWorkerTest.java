@@ -10,14 +10,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.facebook.Session;
 import com.ivtolkachev.fbfriendslistapp.R;
 import com.ivtolkachev.fbfriendslistapp.activity.ProfileActivity;
 import com.ivtolkachev.fbfriendslistapp.data.DatabaseWorker;
-import com.ivtolkachev.fbfriendslistapp.model.Location;
 import com.ivtolkachev.fbfriendslistapp.model.User;
 
 @RunWith(RobolectricTestRunner.class)
@@ -50,23 +48,6 @@ public class DatabaseWorkerTest {
 		User user = new User(id, "Иванов Иван Иванович", "Иван", "Иванович", "Иванов", "http://link", "IvanIvanov", "16.12.2012");
 		String userId = mDatabaseWorker.addUser(user);
 		assertThat(userId, equalTo(id));
-	}
-	
-	@Test 
- 	public void testAddLocation() throws Exception {
-		String id = "111";
-		Location location = new Location("Ukraine", null, "Kherson", "Dimitrova", "73020", 0, 0, id); 
-		long rowId = mDatabaseWorker.addLocation(location);
-		assertTrue(rowId > -1);
-	}
-	
-	@Test
-	public void testGetUserLocation() throws Exception {
-		Location location = null;
-		String userId = "111";
-		location = mDatabaseWorker.getLocation(userId);
-		assertNotNull(location);
-		assertThat(location.getUserId(), equalTo(userId));
 	}
 	
 	@Test
