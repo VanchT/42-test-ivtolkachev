@@ -25,6 +25,7 @@ import com.facebook.model.GraphUser;
 import com.facebook.widget.ProfilePictureView;
 import com.ivtolkachev.fbfriendslistapp.R;
 import com.ivtolkachev.fbfriendslistapp.data.DatabaseWorker;
+import com.ivtolkachev.fbfriendslistapp.model.Location;
 import com.ivtolkachev.fbfriendslistapp.model.User;
 
 public class ProfileActivity extends Activity {
@@ -32,28 +33,18 @@ public class ProfileActivity extends Activity {
 	private static final String TAG = "ProfileActivityTag";
 	private static final int REAUTH_ACTIVITY_CODE = 100;
 	
-	private UiLifecycleHelper uiHelper;
 	private TextView mNoDataView;
 	private RelativeLayout mProfileView;
 	
 	private DatabaseWorker mDatabaseWorker;
 	private SharedPreferences mPreferences;
-	private GraphUser mCurrentUser;
+	private User mCurrentUser;
 	
-	private Session.StatusCallback callback = new Session.StatusCallback() {
-	    @Override
-	    public void call(final Session session, final SessionState state, final Exception exception) {
-	        onSessionStateChange(session, state, exception);
-	    }
-	};
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_profile);
-		
-		uiHelper = new UiLifecycleHelper(this, callback);
-	    uiHelper.onCreate(savedInstanceState);
 	    
 	    mNoDataView = (TextView)findViewById(R.id.profile_no_data);
         mProfileView = (RelativeLayout)findViewById(R.id.profile_holder);
@@ -70,13 +61,16 @@ public class ProfileActivity extends Activity {
     	onCreate(null);
     }
 	
-	private void loadUserData(){
-		Session session = Session.getActiveSession();
+	private void loadUserDataFromFacebook(){
+    	Session session = Session.getActiveSession();
         if (session != null && session.isOpened()) {
+        	Log.d(TAG, "session is opened");
             makeMeRequest(session);
         } else {
-        	finish();
+        	Log.d(TAG, "session is not opened");
+        	showUserData();
         }
+
 	}
 	
 	/**
@@ -84,18 +78,18 @@ public class ProfileActivity extends Activity {
      * @param session the opened active session.
      */
 	private void makeMeRequest(final Session session) {
-	    Request request = Request.newMeRequest(session, 
-	            new Request.GraphUserCallback() {
+	    Request request = Request.newMeRequest(session, new Request.GraphUserCallback() {
+	    	
 	        @Override
 	        public void onCompleted(GraphUser user, Response response) {
 	            if (session == Session.getActiveSession()) {
 	                if (user != null) {
-	                	Log.d("MainActivityTag", "User data was loaded.");
+	                	Log.d(TAG, "User data was loaded.");
 	    				SharedPreferences.Editor editor = mPreferences.edit();
-	    				editor.putString(getString(R.string.preference_user_id), user.getId());
+	    				editor.putString(getString(R.string.pref_user_id), user.getId());
 	    				editor.commit();
-	    				mDatabaseWorker.addUser(user);
-	    				mCurrentUser = user;
+	    				mCurrentUser = new User(user);
+	    				mDatabaseWorker.addUser(mCurrentUser);
 	    				Log.d(TAG, "Current user = " + user.toString());
 	    				Log.d(TAG, "JSON = " + user.getInnerJSONObject().toString());
 	    				showUserData();
@@ -110,32 +104,32 @@ public class ProfileActivity extends Activity {
 	    request.executeAsync();
 	} 
 	
-	private void onSessionStateChange(final Session session, SessionState state, Exception exception) {
-	    if (session != null && session.isOpened()) {
-	        makeMeRequest(session);
-	    }
-	}
     
     /**
      * Loads user data from database.
      */
-    private void loadUserDataFromDatabase(){  
-    	Log.d(TAG, "Try load from database.");
+    private void loadUserData(){   	
     	new AsyncTask<Void, Void, User>(){
 
 			@Override
 			protected User doInBackground(Void... params) {
-				String userId = mPreferences.getString(getString(R.string.preference_user_id), null);
+				String userId = mPreferences.getString(getString(R.string.pref_user_id), null);
 				User user = null;
 				if (userId != null) {
+					Log.d(TAG, "Try load from database");
 					user = mDatabaseWorker.getUser(userId);
-				}
+				} 
 				return user;
 			}
     		
 			protected void onPostExecute(User user) {
-	    		mCurrentUser = user;
-				showUserData();
+				if (user == null){
+					Log.d(TAG, "Try load from Facebook");
+					loadUserDataFromFacebook();
+				} else {
+					mCurrentUser = user;
+					showUserData();
+				}
 			}
 			
     	}.execute();    	
@@ -145,11 +139,12 @@ public class ProfileActivity extends Activity {
      * Shows data about user on screen.
      */
     private void showUserData() {
-    	//TODO: This implementation may be changed in the future.
     	if (mCurrentUser == null) {
+    		Log.d(TAG, "Show massege no data");
     		mProfileView.setVisibility(View.GONE);
     		mNoDataView.setVisibility(View.VISIBLE);
     	} else {
+    		Log.d(TAG, "Show user data");
 	    	TextView nameView = (TextView)findViewById(R.id.name_me);
 	    	TextView usernameView = (TextView)findViewById(R.id.username_me);
 	    	TextView birthdayView = (TextView)findViewById(R.id.birthday_me);
@@ -172,7 +167,7 @@ public class ProfileActivity extends Activity {
 	    	             "<a href=\""+ mCurrentUser.getLink() + "\"><b>"+ getString(R.string.me_link) + "</b></a> "));
 	    		linkView.setMovementMethod(LinkMovementMethod.getInstance());
 	    	}	    	
-	    	GraphLocation location = mCurrentUser.getLocation();
+	    	Location location = mCurrentUser.getLocation();
 	    	if (location != null) {
 	    		((TextView)findViewById(R.id.location_me_lable)).setVisibility(View.VISIBLE);
 	    		showLocation(location);
@@ -184,7 +179,7 @@ public class ProfileActivity extends Activity {
      * Shows data about user location on screen.
      * @param location object of GraphLocation type.
      */
-    private void showLocation(GraphLocation location){
+    private void showLocation(Location location){
     	//TODO: This implementation may be changed in the future.
     	if (location.getCountry() != null) {
     		((TextView)findViewById(R.id.location_country))
@@ -220,12 +215,12 @@ public class ProfileActivity extends Activity {
     	AlertDialog.Builder builder = new AlertDialog.Builder(this);
     	builder.setPositiveButton(R.string.button_retry, new DialogInterface.OnClickListener() {
     	           public void onClick(DialogInterface dialog, int id) {
-    	        	   loadUserData();
+    	        	   loadUserDataFromFacebook();
     	           }
     	       });
     	builder.setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
     	           public void onClick(DialogInterface dialog, int id) {
-    	        	   loadUserDataFromDatabase();
+    	        	   showUserData();
     	           }
     	       });
     	builder.setMessage(R.string.connection_alert);
@@ -236,27 +231,22 @@ public class ProfileActivity extends Activity {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 	    super.onActivityResult(requestCode, resultCode, data);
-	    if (requestCode == REAUTH_ACTIVITY_CODE) {
-	        uiHelper.onActivityResult(requestCode, resultCode, data);
-	    }
+	    Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
 	}
 	
 	@Override
 	public void onResume() {
 	    super.onResume();
-	    uiHelper.onResume();
 	}
 
 	@Override
 	public void onSaveInstanceState(Bundle bundle) {
 	    super.onSaveInstanceState(bundle);
-	    uiHelper.onSaveInstanceState(bundle);
 	}
 
 	@Override
 	public void onPause() {
 	    super.onPause();
-	    uiHelper.onPause();
 	}
 	
 	@Override
@@ -268,7 +258,6 @@ public class ProfileActivity extends Activity {
 	@Override
 	public void onDestroy() {
 	    super.onDestroy();
-	    uiHelper.onDestroy();
 	}
 	
 }

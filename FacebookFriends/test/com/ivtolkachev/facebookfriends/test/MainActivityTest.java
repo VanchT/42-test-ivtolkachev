@@ -47,24 +47,6 @@ public class MainActivityTest {
 	}
 	
 	@Test
-	public void testApplicationShouldHasApplicationId() throws Exception {
-		PackageInfo packageInfo = mActivity.getPackageManager().getPackageInfo(
-				mActivity.getComponentName().toString(), PackageManager.GET_META_DATA);
-		Bundle metaData = packageInfo.applicationInfo.metaData;
-		String origin = metaData.getString(Session.APPLICATION_ID_PROPERTY);
-		assertThat(origin, equalTo(mActivity.getString(R.string.app_id)));
-	}
-	
-	@Test
-	public void testApplicationShouldHasPermissions() throws Exception {
-		PackageManager packageManager = mActivity.getPackageManager();
-		PackageInfo packageInfo = packageManager.getPackageInfo(
-				mActivity.getComponentName().toString(), PackageManager.GET_PERMISSIONS);
-		int origin = packageManager.checkPermission(Manifest.permission.INTERNET, packageInfo.packageName);
-		assertTrue(origin == PackageManager.PERMISSION_GRANTED);
-	}
-	
-	@Test
 	public void testViewsOnScreen() throws Exception {
 		final View origin = mActivity.getWindow().getDecorView();
 		ViewAsserts.assertOnScreen(origin, mProfileButton);
@@ -75,9 +57,6 @@ public class MainActivityTest {
 	public void testButtonsProperties() throws Exception {
 		assertThat(mProfileButton.getText().toString(), equalTo(mActivity.getString(R.string.button_profile)));
 		assertThat(mFriendsButton.getText().toString(), equalTo(mActivity.getString(R.string.button_friends)));
-		
-		assertThat(mProfileButton.getBackground().toString(), equalTo(mActivity.getString(R.color.com_facebook_blue)));
-		assertThat(mFriendsButton.getBackground().toString(), equalTo(mActivity.getString(R.color.com_facebook_blue)));
 	}
 	
 	@Test
