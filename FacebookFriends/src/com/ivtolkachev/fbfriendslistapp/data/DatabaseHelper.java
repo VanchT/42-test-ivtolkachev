@@ -8,6 +8,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	
 	private static final String TAG = "DatabaseHelperTag";
 
+	public static final int DATABASE_VERSION = 2;
 	private static final String DB_NAME = "FacebookFriendsDB";
 	private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS ";
 	//Tables names
@@ -22,6 +23,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public static final String USER_USERNAME = "userUsername";
 	public static final String USER_BIRTHDAY = "userBirthday";
 	public static final String USER_LINK = "userLink";	
+	public static final String USER_PHOTO = "userPhoto";
+	//Database migrations
+	private static final String MIGRATE_1_to_2 = "alter table " + USERS_TABLE + " add column " + USER_PHOTO + " blob;";
 	
 	private static final String CREATE_USERS_TABLE_STRING = "(" 
 			+ USER_ID + " text primary key, " 
@@ -31,11 +35,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			+ USER_LAST_NAME + " text, "
 			+ USER_USERNAME + " text, "
 			+ USER_BIRTHDAY + " text, "
-			+ USER_LINK + " text"
-			+ ");";
+			+ USER_LINK + " text, "
+			+ USER_PHOTO + " blob"
+			+");";
 	
 	public DatabaseHelper(Context context) {
-		super(context, DB_NAME, null, 1);
+		super(context, DB_NAME, null, DATABASE_VERSION);
 	}
 
 	@Override
@@ -45,8 +50,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		// TODO Auto-generated method stub
-
+		if (oldVersion < 2) {
+			//add column userPhoto to Users table
+			db.execSQL(MIGRATE_1_to_2);
+		}
 	}
 
 }

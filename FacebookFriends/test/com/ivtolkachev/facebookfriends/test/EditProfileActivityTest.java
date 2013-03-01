@@ -68,9 +68,9 @@ public class EditProfileActivityTest {
 		assertNotNull(mMiddleNameEdit);
 		mLastNameEdit = (EditText)mActivity.findViewById(R.id.last_name_edit);
 		assertNotNull(mLastNameEdit);
-		mUsernameEdit = (EditText)mActivity.findViewById(R.id.usedname_edit);
+		mUsernameEdit = (EditText)mActivity.findViewById(R.id.username_edit);
 		assertNotNull(mUsernameEdit);
-		mSaveButton = (EditText)mActivity.findViewById(R.id.profile_save_btn);
+		mSaveButton = (Button)mActivity.findViewById(R.id.profile_save_btn);
 		assertNotNull(mSaveButton);
 	}
 	

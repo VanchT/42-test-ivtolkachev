@@ -51,7 +51,7 @@ public class DatabaseWorkerTest {
 	}
 	
 	@Test
-	public void testGetCurrentUser() throws Exception {
+	public void testGetUser() throws Exception {
 		User user = null;
 		String userId = "111";
 		assertNotNull(userId);
@@ -70,4 +70,11 @@ public class DatabaseWorkerTest {
 		assertTrue(database == null || !database.isOpen());
 	}
 	
+	@Test
+	public void testUpdateUser() throws Exception {
+		String id = "111";
+		User user = new User(id, "Сергеев Сергей Сергеевич", "Сергей", "Сергеевич", "Сергеев", "http://link", "SergSergeev", "12/12/2012");
+		String userId = mDatabaseWorker.updateUser(user);
+		assertThat(userId, equalTo(id));
+	}
 }

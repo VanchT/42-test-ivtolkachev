@@ -14,13 +14,11 @@
     
     <!-- MENU -->
     <string name="menu_settings">Settings</string>
-    <string name="menu_edit">Edit</string>
-    <string name="menu_fb_connect">Sign in with Facebook</string>
+    <string name="menu_edit">Edit profile</string>
     
     <!-- MainActivity -->
-    <string name="button_profile">My profile</string>
-    <string name="button_friends">My friends</string>
     
+     
     <!-- ProfileActivity -->
     <string name="me_birth">Date of birth:</string>
     <string name="me_location">Location:</string>
@@ -34,9 +32,16 @@
     <string name="me_latitude">Latitude</string>
     <string name="me_longitude">Longitude</string>
     
+    <!-- EditProfileActivity -->
+    <string name="first_name_lable">First name</string>
+    <string name="middle_name_lable">Middle name</string>
+    <string name="last_name_lable">Last name</string>
+    <string name="username_lable">Username</string>
+    <string name="button_save">Save</string>
+    <string name="button_edit">Edit</string>
+    
     <!-- PREFERENCES -->
     <string name="app_preferences">AppPreferences</string>
     <string name="pref_user_id">user_id</string>
-    <string name="pref_fb_connection">fb_connection</string>
 
 </resources>

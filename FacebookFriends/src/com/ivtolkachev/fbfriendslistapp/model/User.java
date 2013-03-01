@@ -4,6 +4,8 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
+import android.graphics.Bitmap;
+
 import com.facebook.model.GraphLocation;
 import com.facebook.model.GraphObject;
 import com.facebook.model.GraphUser;
@@ -17,6 +19,9 @@ public class User {
 	private String mLink;
 	private String mUsername;
 	private String mBirthday;
+	private Bitmap mImage;
+	
+	private boolean mImageChanged;
 
 	public User(String mId, String mName, String mFirstName,
 			String mMiddleName, String mLastName,
@@ -30,6 +35,8 @@ public class User {
 		this.mLink = mLink;
 		this.mUsername = mUsername;
 		this.mBirthday = mBirthday;
+		this.mImage = null;
+		this.mImageChanged = false;
 	}
 	
 	public User(GraphUser graphUser){
@@ -41,6 +48,8 @@ public class User {
 		this.mLink = graphUser.getLink();
 		this.mUsername = graphUser.getUsername();
 		this.mBirthday = graphUser.getBirthday();
+		this.mImage = null;
+		this.mImageChanged = false;
 	}
 
 	public String getId() {
@@ -106,6 +115,29 @@ public class User {
 
 	public void setBirthday(String birthday) {
 		mBirthday = birthday;
+	}
+
+	/**
+	 * @return the mImage
+	 */
+	public Bitmap getImage() {
+		return mImage;
+	}
+	
+	/**
+	 * @param mImage the mImage to set
+	 */
+	public void setImage(Bitmap mImage) {
+		this.mImage = mImage;
+		this.mImageChanged = true;
+	}
+	
+	public boolean isImageChanged(){
+		return mImageChanged;
+	}
+	
+	public void setImageChangedFlag(boolean flag){
+		this.mImageChanged = flag;
 	}
 
 }
