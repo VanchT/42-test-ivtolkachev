@@ -21,6 +21,7 @@ import android.text.method.LinkMovementMethod;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -40,6 +41,7 @@ public class MainActivity extends Activity {
 	
 	private static final String TAG = "MainActivityTag";
 	private static final int REAUTH_ACTIVITY_CODE = 100;
+	private static final int EDIT_PROFILE_ACTIVITY_CODE = 200;
 	
 	private TextView mNoDataView;
 	private RelativeLayout mProfileView;
@@ -108,31 +110,48 @@ public class MainActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.activity_main, menu);
+        getMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
+    }
+    
+    @Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+			case R.id.menu_edit_profile:
+				Intent intent = new Intent(this, EditProfileActivity.class);
+				startActivityForResult(intent, EDIT_PROFILE_ACTIVITY_CODE);
+				return true;
+		
+			default:
+				return super.onOptionsItemSelected(item);
+			}
+	}
+    
+    private void handleReauthActivityResult(int requestCode, int resultCode, Intent data){
+    	if (resultCode == RESULT_OK) {
+			mUIHelper.onActivityResult(requestCode, resultCode, data);
+			return;
+		} 
+    	if (resultCode == RESULT_CANCELED) {
+			Log.d(TAG, "Close app");
+			Session.getActiveSession().closeAndClearTokenInformation();
+			Session.setActiveSession(null);
+			finish();
+		}
     }
     
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "onActivityResult: requestCode = " + String.valueOf(resultCode));
-        switch (resultCode) {
-			case REAUTH_ACTIVITY_CODE:
-				mUIHelper.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult: requestCode = " + String.valueOf(requestCode));
+        Log.d(TAG, "onActivityResult: resultCode = " + String.valueOf(resultCode));
+        switch (requestCode) {				
+			case EDIT_PROFILE_ACTIVITY_CODE:
+				if (resultCode == RESULT_OK) loadUserData();
 				break;
-				
-			case RESULT_OK:
-				mUIHelper.onActivityResult(requestCode, resultCode, data);
-				break;
-				
-			case RESULT_CANCELED:
-				Log.d(TAG, "Close app");
-				Session.getActiveSession().closeAndClearTokenInformation();
-				Session.setActiveSession(null);
-				finish();
-				break;
-		default:
-			break;
+			
+			default:
+				handleReauthActivityResult(requestCode, resultCode, data);
 		}
     }
     
@@ -170,12 +189,12 @@ public class MainActivity extends Activity {
      */
     private void authenticate() {   	   	
     	Log.d(TAG, "authenticate");
+    	
     	Session.openActiveSession(this, true, new Session.StatusCallback() {
  
     		@Override
     		public void call(Session session, SessionState state, Exception exception) {
     			if (session.isOpened()) {
-    				//loadUserData();
     				Log.d(TAG, "openActiveSession: session is opened");
     			}
     		}

@@ -19,12 +19,12 @@ import android.widget.TextView;
 
 import com.facebook.Session;
 import com.ivtolkachev.fbfriendslistapp.R;
-import com.ivtolkachev.fbfriendslistapp.activity.ProfileActivity;
+import com.ivtolkachev.fbfriendslistapp.activity.EditProfileActivity;
 
 @RunWith(RobolectricTestRunner.class)
 public class EditProfileActivityTest {
 	
-	private EditProfileActivit mActivity;
+	private EditProfileActivity mActivity;
 	private ImageView mProfileImage;
 	private TextView mFirstNameLable;
 	private TextView mMiddleNameLable;
@@ -43,7 +43,7 @@ public class EditProfileActivityTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		mActivity = new ProfileActivity();
+		mActivity = new EditProfileActivity();
 		Session session = new Session.Builder(mActivity).setApplicationId(mActivity.getString(R.string.app_id)).build();
 		Session.setActiveSession(session);
 		mActivity.create();
