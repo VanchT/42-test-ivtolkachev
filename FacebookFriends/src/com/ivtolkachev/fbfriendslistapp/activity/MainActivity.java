@@ -29,6 +29,7 @@ import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.ProfilePictureView;
 import com.ivtolkachev.fbfriendslistapp.R;
@@ -38,6 +39,7 @@ import com.ivtolkachev.fbfriendslistapp.model.User;
 public class MainActivity extends Activity {
 	
 	private static final String TAG = "MainActivityTag";
+	private static final int REAUTH_ACTIVITY_CODE = 100;
 	
 	private TextView mNoDataView;
 	private RelativeLayout mProfileView;
@@ -45,11 +47,20 @@ public class MainActivity extends Activity {
 	private DatabaseWorker mDatabaseWorker;
 	private SharedPreferences mPreferences;
 	private User mCurrentUser;
+	UiLifecycleHelper mUIHelper;
+	
+	private Session.StatusCallback callback = new Session.StatusCallback() {
+	    @Override
+	    public void call(final Session session, final SessionState state, final Exception exception) {
+	        onSessionStateChange(session, state, exception);
+	    }
+	};
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mUIHelper = new UiLifecycleHelper(MainActivity.this, callback);
         
         mNoDataView = (TextView)findViewById(R.id.profile_no_data);
         mProfileView = (RelativeLayout)findViewById(R.id.profile_holder);
@@ -57,16 +68,17 @@ public class MainActivity extends Activity {
         mPreferences = getSharedPreferences(getString(R.string.app_preferences), 0);
         mDatabaseWorker = DatabaseWorker.getDatabaseWorker(this.getApplicationContext());
         mDatabaseWorker.openDatabase();
-        
-        mPreferences = getSharedPreferences(getString(R.string.app_preferences), 0);
-        
-        boolean isConnected = mPreferences.getBoolean(getString(R.string.pref_fb_connection), false);
-        if (isConnected) {
-        	loadUserData();
-        } else {
-        	checkFacebookConnection();
-        }
+        Log.d(TAG, "This name = " + this.getLocalClassName());
+        authenticate();
     }    
+    
+    private void onSessionStateChange(final Session session, SessionState state, Exception exception) {
+    	Log.d(TAG, "Session state was changed");
+        if (session != null && session.isOpened()) {
+        	Log.d(TAG, "Session is opened");
+        	loadUserData();
+        }
+    }
     
     /**
      * Prints Hash Key of the application.
@@ -103,63 +115,85 @@ public class MainActivity extends Activity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult: requestCode = " + String.valueOf(resultCode));
+        switch (resultCode) {
+			case REAUTH_ACTIVITY_CODE:
+				mUIHelper.onActivityResult(requestCode, resultCode, data);
+				break;
+				
+			case RESULT_OK:
+				mUIHelper.onActivityResult(requestCode, resultCode, data);
+				break;
+				
+			case RESULT_CANCELED:
+				Log.d(TAG, "Close app");
+				Session.getActiveSession().closeAndClearTokenInformation();
+				Session.setActiveSession(null);
+				finish();
+				break;
+		default:
+			break;
+		}
     }
     
     @Override
     protected void onStop() {
     	super.onStop();
     }  
-    
-    private void checkFacebookConnection(){
-    	Session session = new Session.Builder(this).setApplicationId(getString(R.string.app_id)).build();
-		Session.setActiveSession(session);
-		if (!session.isOpened()){
-			buildAlertDialogConnectionProposal();
-		}
+      
+    @Override
+    public void onResume() {
+        super.onResume();
+        mUIHelper.onResume();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        super.onSaveInstanceState(bundle);
+        mUIHelper.onSaveInstanceState(bundle);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mUIHelper.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mUIHelper.onDestroy();
     }
     
     /**
      * Authenticates the user if it need.
      */
-    private void authenticate() {
-    	PackageInfo packageInfo = null;
-		try {
-			packageInfo = this.getPackageManager().getPackageInfo(
-					this.getComponentName().toShortString(), PackageManager.GET_META_DATA);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		if (packageInfo != null) {
-			Bundle metaData = packageInfo.applicationInfo.metaData;
-			String appId = metaData.getString(Session.APPLICATION_ID_PROPERTY);
-			if (appId == null){
-				metaData.putString(Session.APPLICATION_ID_PROPERTY, getString(R.string.app_id));
-			}
-		}
+    private void authenticate() {   	   	
+    	Log.d(TAG, "authenticate");
     	Session.openActiveSession(this, true, new Session.StatusCallback() {
-
+ 
     		@Override
     		public void call(Session session, SessionState state, Exception exception) {
     			if (session.isOpened()) {
-    				SharedPreferences.Editor editor = mPreferences.edit();
-    				editor.putBoolean(getString(R.string.pref_fb_connection), true);
-    				editor.commit();
-    				loadUserData();
-    				Log.d(TAG, "Session is opened");
-    			} 
+    				//loadUserData();
+    				Log.d(TAG, "openActiveSession: session is opened");
+    			}
     		}
     	});
+    	
     }
 
     private void loadUserDataFromFacebook(){
     	Session session = Session.getActiveSession();
         if (session != null && session.isOpened()) {
         	Log.d(TAG, "session is opened");
+        	//List<String> permissions = new ArrayList<String>();
+	        //permissions.add("user_birthday");
+	        //session.requestNewReadPermissions(new Session.NewPermissionsRequest(MainActivity.this, permissions)); 
             makeMeRequest(session);
         } else {
         	Log.d(TAG, "session is not opened");
-        	showUserData();
+        	authenticate();
         }
 
 	}
@@ -169,9 +203,7 @@ public class MainActivity extends Activity {
      * @param session the opened active session.
      */
 	private void makeMeRequest(final Session session) {
-		List<String> permissions = new ArrayList<String>();
-        permissions.add("user_birthday");
-        session.requestNewReadPermissions(new Session.NewPermissionsRequest(this, permissions));
+		
 	    Request request = Request.newMeRequest(session, new Request.GraphUserCallback() {
 	    	
 	        @Override
@@ -184,8 +216,6 @@ public class MainActivity extends Activity {
 	    				editor.commit();
 	    				mCurrentUser = new User(user);
 	    				mDatabaseWorker.addUser(mCurrentUser);
-	    				Log.d(TAG, "Current user = " + user.toString());
-	    				Log.d(TAG, "JSON = " + user.getInnerJSONObject().toString());
 	    				showUserData();
 	                }
 	            }
@@ -244,6 +274,8 @@ public class MainActivity extends Activity {
 	    	TextView linkView = (TextView)findViewById(R.id.link_me);
 	    	ProfilePictureView profilePicture = (ProfilePictureView)findViewById(R.id.profile_pic);
 	    	
+	    	mNoDataView.setVisibility(View.GONE);
+	    	mProfileView.setVisibility(View.VISIBLE);
 	    	profilePicture.setProfileId(mCurrentUser.getId());
 	    	nameView.setText(mCurrentUser.getName());
 	    	usernameView.setText(mCurrentUser.getUsername());
@@ -272,7 +304,7 @@ public class MainActivity extends Activity {
     	       });
     	builder.setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
     	           public void onClick(DialogInterface dialog, int id) {
-    	        	   showUserData();
+    	        	   finish();
     	           }
     	       });
     	builder.setMessage(R.string.connection_alert);
@@ -280,20 +312,4 @@ public class MainActivity extends Activity {
     	dialog.show();
     }
 
-    private void buildAlertDialogConnectionProposal(){
-    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    	builder.setPositiveButton(R.string.button_yes, new DialogInterface.OnClickListener() {
-    	           public void onClick(DialogInterface dialog, int id) {
-    	        	   authenticate();
-    	           }
-    	       });
-    	builder.setNegativeButton(R.string.button_no, new DialogInterface.OnClickListener() {
-    	           public void onClick(DialogInterface dialog, int id) {
-    	        	   finish();
-    	           }
-    	       });
-    	builder.setMessage(R.string.connection_proposal);
-    	AlertDialog dialog = builder.create();
-    	dialog.show();
-    }
 }
