@@ -112,28 +112,24 @@ public class MainActivity extends Activity {
         return true;
     }
     
+    private void handleReauthActivityResult(int requestCode, int resultCode, Intent data){
+    	if (resultCode == RESULT_OK) {
+			mUIHelper.onActivityResult(requestCode, resultCode, data);
+			return;
+		} 
+    	if (resultCode == RESULT_CANCELED) {
+			Log.d(TAG, "Close app");
+			Session.getActiveSession().closeAndClearTokenInformation();
+			Session.setActiveSession(null);
+			finish();
+		}
+    }
+    
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, "onActivityResult: requestCode = " + String.valueOf(resultCode));
-        switch (resultCode) {
-			case REAUTH_ACTIVITY_CODE:
-				mUIHelper.onActivityResult(requestCode, resultCode, data);
-				break;
-				
-			case RESULT_OK:
-				mUIHelper.onActivityResult(requestCode, resultCode, data);
-				break;
-				
-			case RESULT_CANCELED:
-				Log.d(TAG, "Close app");
-				Session.getActiveSession().closeAndClearTokenInformation();
-				Session.setActiveSession(null);
-				finish();
-				break;
-		default:
-			break;
-		}
+        handleReauthActivityResult(requestCode, resultCode, data);
     }
     
     @Override
@@ -177,7 +173,11 @@ public class MainActivity extends Activity {
     			if (session.isOpened()) {
     				//loadUserData();
     				Log.d(TAG, "openActiveSession: session is opened");
+    			} 
+    			if (exception != null){
+    				Log.d(TAG, "exceotion = " + exception.getMessage());
     			}
+    			
     		}
     	});
     	
