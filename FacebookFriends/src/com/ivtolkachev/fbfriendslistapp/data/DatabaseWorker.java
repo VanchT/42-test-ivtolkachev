@@ -141,4 +141,26 @@ public class DatabaseWorker {
 		}
 		return result;
 	}
+	
+	/**
+	 * Updates user's profile picture in database.
+	 * @param user the user whose data was changed.
+	 * @return userId, if update was successful.
+	 */
+	public synchronized String updateUserProfilePicture(Bitmap bmp, String userId){
+		String result = null;
+		ContentValues values = new ContentValues();
+		if (bmp != null){
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
+			values.put(DatabaseHelper.USER_PHOTO, out.toByteArray());
+		}
+		try {
+			int rowsCount = mDatabase.update(DatabaseHelper.USERS_TABLE, values, DatabaseHelper.USER_ID + "=" + userId, null);
+			if (rowsCount == 1) result = userId;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 }

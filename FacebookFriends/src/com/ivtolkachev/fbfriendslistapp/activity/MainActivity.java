@@ -1,50 +1,50 @@
 package com.ivtolkachev.fbfriendslistapp.activity;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.MalformedURLException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.Signature;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.facebook.LoggingBehavior;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
+import com.facebook.android.Facebook;
+import com.facebook.internal.Logger;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.ProfilePictureView;
 import com.ivtolkachev.fbfriendslistapp.R;
 import com.ivtolkachev.fbfriendslistapp.data.DatabaseWorker;
 import com.ivtolkachev.fbfriendslistapp.model.User;
+import com.ivtolkachev.fbfriendslistapp.net.FacebookLoader;
 
 public class MainActivity extends Activity {
 	
 	private static final String TAG = "MainActivityTag";
-	private static final int REAUTH_ACTIVITY_CODE = 100;
 	private static final int EDIT_PROFILE_ACTIVITY_CODE = 200;
 	
 	private TextView mNoDataView;
 	private RelativeLayout mProfileView;
+	private ImageView mProfileImage;
+	private ProgressBar mImageProgress;
 	
 	private DatabaseWorker mDatabaseWorker;
 	private SharedPreferences mPreferences;
@@ -58,6 +58,7 @@ public class MainActivity extends Activity {
 	    }
 	};
 	
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +67,8 @@ public class MainActivity extends Activity {
         
         mNoDataView = (TextView)findViewById(R.id.profile_no_data);
         mProfileView = (RelativeLayout)findViewById(R.id.profile_holder);
+        mProfileImage = (ImageView)findViewById(R.id.profile_pic);
+        mImageProgress = (ProgressBar)findViewById(R.id.profile_pic_progress);
         
         mPreferences = getSharedPreferences(getString(R.string.app_preferences), 0);
         mDatabaseWorker = DatabaseWorker.getDatabaseWorker(this.getApplicationContext());
@@ -81,27 +84,7 @@ public class MainActivity extends Activity {
         	loadUserData();
         }
     }
-    
-    /**
-     * Prints Hash Key of the application.
-     */
-    public void printHashKey() {
-	    try {
-	        PackageInfo info = getPackageManager().getPackageInfo("com.ivtolkachev.fbfriendslistapp",
-	                PackageManager.GET_SIGNATURES);
-	        for (Signature signature : info.signatures) {
-	            MessageDigest md = MessageDigest.getInstance("SHA");
-	            md.update(signature.toByteArray());
-	            Log.d(TAG, Base64.encodeToString(md.digest(), Base64.DEFAULT));
-	        }
-	    } catch (NameNotFoundException e) {
-	
-	    } catch (NoSuchAlgorithmException e) {
-
-    }
-
-}
-    
+      
     //TODO: The method added for testing.
     public void create(){
     	onCreate(null);
@@ -182,6 +165,7 @@ public class MainActivity extends Activity {
     public void onDestroy() {
         super.onDestroy();
         mUIHelper.onDestroy();
+        FacebookLoader.cancelAllTasks();
     }
     
     /**
@@ -235,6 +219,7 @@ public class MainActivity extends Activity {
 	    				editor.commit();
 	    				mCurrentUser = new User(user);
 	    				mDatabaseWorker.addUser(mCurrentUser);
+	    				loadMeProfilePicture();
 	    				showUserData();
 	                }
 	            }
@@ -291,11 +276,9 @@ public class MainActivity extends Activity {
 	    	TextView usernameView = (TextView)findViewById(R.id.username_me);
 	    	TextView birthdayView = (TextView)findViewById(R.id.birthday_me);
 	    	TextView linkView = (TextView)findViewById(R.id.link_me);
-	    	ProfilePictureView profilePicture = (ProfilePictureView)findViewById(R.id.profile_pic);
 	    	
 	    	mNoDataView.setVisibility(View.GONE);
 	    	mProfileView.setVisibility(View.VISIBLE);
-	    	profilePicture.setProfileId(mCurrentUser.getId());
 	    	nameView.setText(mCurrentUser.getName());
 	    	usernameView.setText(mCurrentUser.getUsername());
 	    	if (mCurrentUser.getBirthday() == null){
@@ -310,7 +293,8 @@ public class MainActivity extends Activity {
 	    		linkView.setText(Html.fromHtml(
 	    	             "<a href=\""+ mCurrentUser.getLink() + "\"><b>"+ getString(R.string.me_link) + "</b></a> "));
 	    		linkView.setMovementMethod(LinkMovementMethod.getInstance());
-	    	}	    	
+	    	}	  
+	    	updateUIProfilePicture();
     	}
     }
 	
@@ -331,4 +315,46 @@ public class MainActivity extends Activity {
     	dialog.show();
     }
 
+    private FacebookLoader.Callback onLoadProfilePictureCallback = new FacebookLoader.Callback() {
+		
+		@Override
+		public void onError(Exception exception) {
+			Log.w(TAG, "The picture does not loaded!");
+			Log.e(TAG, "error text = " + exception.getMessage());
+			mImageProgress.setVisibility(View.GONE);
+			exception.printStackTrace();	
+		}
+		
+		@Override
+		public void onComplate(Bitmap bitmap) {
+			mCurrentUser.setImage(bitmap);
+			mDatabaseWorker.updateUserProfilePicture(bitmap, mCurrentUser.getId());
+			updateUIProfilePicture();
+		}
+		
+		@Override
+		public void onCancel() {
+			Log.w(TAG, "Loadind of profile image was canceled.");
+		}
+	};
+    
+    private void loadMeProfilePicture(){
+    	mImageProgress.setVisibility(View.VISIBLE);
+    	FacebookLoader.loadMeProfilePicture(this, Session.getActiveSession(), new Request.Callback() {
+			
+			@Override
+			public void onCompleted(Response response) {
+				Log.d(TAG, "responce = " + response.toString());
+				FacebookLoader.loadImage(MainActivity.this, response, onLoadProfilePictureCallback);				
+			}
+		});
+    }
+    
+    private void updateUIProfilePicture(){
+    	mImageProgress.setVisibility(View.GONE);
+    	if (mCurrentUser.getImage() != null){
+    		Log.d(TAG, "The picture was updated.");
+    		mProfileImage.setImageBitmap(mCurrentUser.getImage());
+    	}
+    }
 }

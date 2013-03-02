@@ -3,6 +3,8 @@ package com.ivtolkachev.fbfriendslistapp.data;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.nfc.Tag;
+import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 	
@@ -53,6 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		if (oldVersion < 2) {
 			//add column userPhoto to Users table
 			db.execSQL(MIGRATE_1_to_2);
+			Log.i(TAG, "Migration database from vertion 1 to vertion 2.");
 		}
 	}
 
