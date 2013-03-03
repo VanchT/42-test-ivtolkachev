@@ -11,6 +11,7 @@
     <string name="button_no">No</string>
     <string name="connection_alert">No Internet connection!</string>
     <string name="connection_proposal">Do you want to sign in with Facebook?</string>
+    <string name="message_no_empty">This field cannot be empty!</string>
     
     <!-- MENU -->
     <string name="menu_settings">Settings</string>

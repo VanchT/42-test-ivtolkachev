@@ -1,9 +1,8 @@
 package com.ivtolkachev.fbfriendslistapp.activity;
 
-import java.net.MalformedURLException;
-
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,16 +20,13 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.facebook.LoggingBehavior;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
-import com.facebook.android.Facebook;
-import com.facebook.internal.Logger;
 import com.facebook.model.GraphUser;
-import com.facebook.widget.ProfilePictureView;
+import com.ivtolkachev.fbfriendslistapp.FFApplication;
 import com.ivtolkachev.fbfriendslistapp.R;
 import com.ivtolkachev.fbfriendslistapp.data.DatabaseWorker;
 import com.ivtolkachev.fbfriendslistapp.model.User;
@@ -39,7 +35,7 @@ import com.ivtolkachev.fbfriendslistapp.net.FacebookLoader;
 public class MainActivity extends Activity {
 	
 	private static final String TAG = "MainActivityTag";
-	private static final int EDIT_PROFILE_ACTIVITY_CODE = 200;
+	private static final int REQUEST_CODE_EDIT_PROFILE = 200;
 	
 	private TextView mNoDataView;
 	private RelativeLayout mProfileView;
@@ -47,8 +43,6 @@ public class MainActivity extends Activity {
 	private ProgressBar mImageProgress;
 	
 	private DatabaseWorker mDatabaseWorker;
-	private SharedPreferences mPreferences;
-	private User mCurrentUser;
 	UiLifecycleHelper mUIHelper;
 	
 	private Session.StatusCallback callback = new Session.StatusCallback() {
@@ -58,23 +52,22 @@ public class MainActivity extends Activity {
 	    }
 	};
 	
-	
-    @Override
+    
+	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mUIHelper = new UiLifecycleHelper(MainActivity.this, callback);
+        FFApplication.init(getApplicationContext());
         
         mNoDataView = (TextView)findViewById(R.id.profile_no_data);
         mProfileView = (RelativeLayout)findViewById(R.id.profile_holder);
         mProfileImage = (ImageView)findViewById(R.id.profile_pic);
         mImageProgress = (ProgressBar)findViewById(R.id.profile_pic_progress);
         
-        mPreferences = getSharedPreferences(getString(R.string.app_preferences), 0);
-        mDatabaseWorker = DatabaseWorker.getDatabaseWorker(this.getApplicationContext());
-        mDatabaseWorker.openDatabase();
-        Log.d(TAG, "This name = " + this.getLocalClassName());
-        authenticate();
+        mDatabaseWorker = FFApplication.getOpenedDatabaseWorker();
+        
+        FFApplication.authenticate(MainActivity.this);
     }    
     
     private void onSessionStateChange(final Session session, SessionState state, Exception exception) {
@@ -102,7 +95,7 @@ public class MainActivity extends Activity {
     	switch (item.getItemId()) {
 			case R.id.menu_edit_profile:
 				Intent intent = new Intent(this, EditProfileActivity.class);
-				startActivityForResult(intent, EDIT_PROFILE_ACTIVITY_CODE);
+				startActivityForResult(intent, REQUEST_CODE_EDIT_PROFILE);
 				return true;
 		
 			default:
@@ -129,8 +122,8 @@ public class MainActivity extends Activity {
         Log.d(TAG, "onActivityResult: requestCode = " + String.valueOf(requestCode));
         Log.d(TAG, "onActivityResult: resultCode = " + String.valueOf(resultCode));
         switch (requestCode) {				
-			case EDIT_PROFILE_ACTIVITY_CODE:
-				if (resultCode == RESULT_OK) loadUserData();
+			case REQUEST_CODE_EDIT_PROFILE:
+				loadUserData();
 				break;
 			
 			default:
@@ -141,6 +134,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onStop() {
     	super.onStop();
+    	FacebookLoader.cancelAllTasks();
     }  
       
     @Override
@@ -165,27 +159,9 @@ public class MainActivity extends Activity {
     public void onDestroy() {
         super.onDestroy();
         mUIHelper.onDestroy();
-        FacebookLoader.cancelAllTasks();
+        FFApplication.onCloseApplication();
     }
     
-    /**
-     * Authenticates the user if it need.
-     */
-    private void authenticate() {   	   	
-    	Log.d(TAG, "authenticate");
-    	
-    	Session.openActiveSession(this, true, new Session.StatusCallback() {
- 
-    		@Override
-    		public void call(Session session, SessionState state, Exception exception) {
-    			if (session.isOpened()) {
-    				Log.d(TAG, "openActiveSession: session is opened");
-    			}
-    		}
-    	});
-    	
-    }
-
     private void loadUserDataFromFacebook(){
     	Session session = Session.getActiveSession();
         if (session != null && session.isOpened()) {
@@ -196,7 +172,7 @@ public class MainActivity extends Activity {
             makeMeRequest(session);
         } else {
         	Log.d(TAG, "session is not opened");
-        	authenticate();
+        	FFApplication.authenticate(MainActivity.this);
         }
 
 	}
@@ -214,11 +190,10 @@ public class MainActivity extends Activity {
 	            if (session == Session.getActiveSession()) {
 	                if (user != null) {
 	                	Log.d(TAG, "User data was loaded.");
-	    				SharedPreferences.Editor editor = mPreferences.edit();
-	    				editor.putString(getString(R.string.pref_user_id), user.getId());
-	    				editor.commit();
-	    				mCurrentUser = new User(user);
-	    				mDatabaseWorker.addUser(mCurrentUser);
+	    				User currentUser = new User(user);
+	    				FFApplication.cacheUserId(currentUser.getId());
+	    				FFApplication.setCurrentUser(currentUser);
+	    				mDatabaseWorker.addUser(currentUser);
 	    				loadMeProfilePicture();
 	    				showUserData();
 	                }
@@ -240,7 +215,7 @@ public class MainActivity extends Activity {
 
 			@Override
 			protected User doInBackground(Void... params) {
-				String userId = mPreferences.getString(getString(R.string.pref_user_id), null);
+				String userId = FFApplication.getCachedUserId();
 				User user = null;
 				if (userId != null) {
 					Log.d(TAG, "Try load from database");
@@ -254,7 +229,7 @@ public class MainActivity extends Activity {
 					Log.d(TAG, "Try load from Facebook");
 					loadUserDataFromFacebook();
 				} else {
-					mCurrentUser = user;
+					FFApplication.setCurrentUser(user);
 					showUserData();
 				}
 			}
@@ -266,7 +241,8 @@ public class MainActivity extends Activity {
      * Shows data about user on screen.
      */
     private void showUserData() {
-    	if (mCurrentUser == null) {
+    	User currentUser = FFApplication.getCurrentUser();
+    	if (currentUser == null) {
     		Log.d(TAG, "Show massege no data");
     		mProfileView.setVisibility(View.GONE);
     		mNoDataView.setVisibility(View.VISIBLE);
@@ -279,19 +255,19 @@ public class MainActivity extends Activity {
 	    	
 	    	mNoDataView.setVisibility(View.GONE);
 	    	mProfileView.setVisibility(View.VISIBLE);
-	    	nameView.setText(mCurrentUser.getName());
-	    	usernameView.setText(mCurrentUser.getUsername());
-	    	if (mCurrentUser.getBirthday() == null){
+	    	nameView.setText(currentUser.getName());
+	    	usernameView.setText(currentUser.getUsername());
+	    	if (currentUser.getBirthday() == null){
 	    		birthdayView.setVisibility(View.GONE);
 	    	} else {
 	    		((TextView)findViewById(R.id.birthday_me_lable)).setVisibility(View.VISIBLE);
-	    		birthdayView.setText(mCurrentUser.getBirthday());
+	    		birthdayView.setText(currentUser.getBirthday());
 	    	}
-	    	if (mCurrentUser.getLink() == null){
+	    	if (currentUser.getLink() == null){
 	    		linkView.setVisibility(View.GONE);
 	    	} else {
 	    		linkView.setText(Html.fromHtml(
-	    	             "<a href=\""+ mCurrentUser.getLink() + "\"><b>"+ getString(R.string.me_link) + "</b></a> "));
+	    	             "<a href=\""+ currentUser.getLink() + "\"><b>"+ getString(R.string.me_link) + "</b></a> "));
 	    		linkView.setMovementMethod(LinkMovementMethod.getInstance());
 	    	}	  
 	    	updateUIProfilePicture();
@@ -327,8 +303,8 @@ public class MainActivity extends Activity {
 		
 		@Override
 		public void onComplate(Bitmap bitmap) {
-			mCurrentUser.setImage(bitmap);
-			mDatabaseWorker.updateUserProfilePicture(bitmap, mCurrentUser.getId());
+			FFApplication.getCurrentUser().setImage(bitmap);
+			mDatabaseWorker.updateUserProfilePicture(bitmap, FFApplication.getCurrentUser().getId());
 			updateUIProfilePicture();
 		}
 		
@@ -352,9 +328,9 @@ public class MainActivity extends Activity {
     
     private void updateUIProfilePicture(){
     	mImageProgress.setVisibility(View.GONE);
-    	if (mCurrentUser.getImage() != null){
+    	if (FFApplication.getCurrentUser().getImage() != null){
     		Log.d(TAG, "The picture was updated.");
-    		mProfileImage.setImageBitmap(mCurrentUser.getImage());
+    		mProfileImage.setImageBitmap(FFApplication.getCurrentUser().getImage());
     	}
     }
 }

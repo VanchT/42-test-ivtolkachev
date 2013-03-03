@@ -107,6 +107,7 @@ public class DatabaseWorker {
 					user.setImage(BitmapFactory.decodeByteArray(blob, 0, blob.length));
 				}
 			}
+			cursor.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -152,7 +153,7 @@ public class DatabaseWorker {
 		ContentValues values = new ContentValues();
 		if (bmp != null){
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
+			bmp.compress(Bitmap.CompressFormat.JPEG, 100, out);
 			values.put(DatabaseHelper.USER_PHOTO, out.toByteArray());
 		}
 		try {

@@ -33,7 +33,7 @@ public class FacebookLoader {
 	public static void loadMeProfilePicture(Context ctx, Session session, Request.Callback callback){
 		context = ctx;
 		int size = context.getResources().getDimensionPixelSize(
-				com.facebook.android.R.dimen.com_facebook_profilepictureview_preset_size_normal);
+				com.facebook.android.R.dimen.com_facebook_profilepictureview_preset_size_large);
 		Bundle parameters = new Bundle();
 		parameters.putInt("width", size);
 		parameters.putInt("height", size);

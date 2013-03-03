@@ -25,10 +25,10 @@
 	        
 		    <ImageView
 		        android:id="@+id/profile_pic"
-		        android:layout_height="@dimen/com_facebook_profilepictureview_preset_size_normal"
-		        android:layout_width="@dimen/com_facebook_profilepictureview_preset_size_normal"
+		        android:layout_height="wrap_content"
+		        android:layout_width="wrap_content"
 		        android:contentDescription="@string/me_image_description"
-		        android:src="@drawable/com_facebook_profile_default_icon"/>"
+		        android:src="@drawable/default_blank_portrait"/>
 		        
 		    <ProgressBar
 		        android:id="@+id/profile_pic_progress"
@@ -46,6 +46,7 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_toRightOf="@id/profile_pic_holder"
+	        android:layout_alignTop="@id/profile_pic_holder"
 	        android:textStyle="bold"
 	        android:textSize="16sp"
 	        />

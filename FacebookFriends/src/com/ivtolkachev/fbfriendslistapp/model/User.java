@@ -1,16 +1,16 @@
 package com.ivtolkachev.fbfriendslistapp.model;
 
-import java.util.Map;
-
-import org.json.JSONObject;
+import java.io.ByteArrayOutputStream;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import com.facebook.model.GraphLocation;
-import com.facebook.model.GraphObject;
 import com.facebook.model.GraphUser;
+import com.ivtolkachev.fbfriendslistapp.data.DatabaseHelper;
 
-public class User {
+public class User implements Parcelable {
 	private String mId;
 	private String mName;
 	private String mFirstName;
@@ -52,6 +52,20 @@ public class User {
 		this.mImageChanged = false;
 	}
 
+	private User(Parcel in) {
+		this.mId = in.readString();
+		this.mName = in.readString();
+		this.mFirstName = in.readString();
+		this.mMiddleName = in.readString();
+		this.mLastName = in.readString();
+		this.mLink = in.readString();
+		this.mUsername = in.readString();
+		this.mBirthday = in.readString();
+		byte[] byteArray = {};
+		in.readByteArray(byteArray);
+		this.mImage = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+	}
+	
 	public String getId() {
 		return mId;
 	}
@@ -132,6 +146,19 @@ public class User {
 		this.mImageChanged = true;
 	}
 	
+	/**
+	 * Generates value of field 'name' using values of fields 
+	 * 'firstName', 'middleName' and 'lastName'.
+	 */
+	public void generateName(){
+		mName = mFirstName;
+		if (mMiddleName == null || "".equals(mMiddleName)){
+			mName += " " + mLastName;
+		} else {
+			mName += " " + mMiddleName + "\n" + mLastName;
+		}
+	}
+	
 	public boolean isImageChanged(){
 		return mImageChanged;
 	}
@@ -139,5 +166,40 @@ public class User {
 	public void setImageChangedFlag(boolean flag){
 		this.mImageChanged = flag;
 	}
+	
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(mId);
+		dest.writeString(mName);
+		dest.writeString(mFirstName);
+		dest.writeString(mMiddleName);
+		dest.writeString(mLastName);
+		dest.writeString(mLink);
+		dest.writeString(mUsername);
+		dest.writeString(mBirthday);
+		if (mImage == null){
+			dest.writeByteArray(null);
+		} else {
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			mImage.compress(Bitmap.CompressFormat.JPEG, 100, out);
+			dest.writeByteArray(out.toByteArray());
+		} 
+	}
+	
+	public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+		
+		public User createFromParcel(Parcel in) {
+		    return new User(in);
+		}
+		
+		public User[] newArray(int size) {
+		    return new User[size];
+		}
+	};
 
 }
