@@ -1,156 +1,180 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     
-    <Button 
-        android:id="@+id/profile_save_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/button_save"
-        android:textColor="@color/button_text_color"
-		android:background="@color/com_facebook_blue"
-		android:layout_alignParentBottom="true"
-		android:textSize="@dimen/text_huge"
-        />
-    
-    <ScrollView 
-        android:id="@+id/user_data_fields"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/profile_save_btn"
-        android:padding="5dp">
-        
-		<LinearLayout 
-		    android:layout_width="match_parent"
-		    android:layout_height="wrap_content"
-		    android:orientation="vertical" >
-		
-		    <RelativeLayout 
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content">
-		    
-			    <ImageView 
-			        android:id="@+id/profile_image_edit"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:contentDescription="@string/me_image_description"
-			        android:layout_centerHorizontal="true"/>
+	<RelativeLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent">
+	    
+	    <Button 
+	        android:id="@+id/profile_save_btn"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:text="@string/button_save"
+	        android:textColor="@color/button_text_color"
+			android:background="@color/com_facebook_blue"
+			android:layout_alignParentBottom="true"
+			android:textSize="@dimen/text_huge"
+	        android:paddingLeft="@dimen/button_padding_left_ridht"
+			android:paddingTop="@dimen/button_padding_top_bottom"
+			android:paddingRight="@dimen/button_padding_left_ridht"
+			android:paddingBottom="@dimen/button_padding_top_bottom"/>
+	    
+	    <ScrollView 
+	        android:id="@+id/user_data_fields"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_above="@id/profile_save_btn"
+	        android:padding="5dp">
+	        
+			<LinearLayout 
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:orientation="vertical" >
+			
+			    <RelativeLayout 
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content">
 			    
-			    <Button 
-			        android:id="@+id/image_edit_btn"
-			        android:layout_width="wrap_content"
-			        android:layout_height="30dp"
-			        android:text="@string/button_edit"
-			        android:textColor="@color/button_text_color"
-					android:background="@color/com_facebook_blue"
-					android:textSize="@dimen/text_normal"
-					android:padding="@dimen/button_padding"
-					android:layout_below="@id/profile_image_edit"
-					android:layout_alignLeft="@id/profile_image_edit"
-					android:layout_alignRight="@id/profile_image_edit"/>
-		        
-		    </RelativeLayout>
-		    
-		    <TextView
-		        android:id="@+id/first_name_lable"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:text="@string/first_name_lable"
-		        android:textSize="@dimen/text_normal"
-		        android:textStyle="bold"/>
-		
-		    <EditText
-		        android:id="@+id/first_name_edit"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:ems="10"
-		        android:inputType="textPersonName"
-		        android:textSize="@dimen/text_large"/>
-		    
-		    <TextView
-		        android:id="@+id/middle_name_lable"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:text="@string/middle_name_lable"
-		        android:textSize="@dimen/text_normal"
-		        android:textStyle="bold"/>
-		    
-		    <EditText
-		        android:id="@+id/middle_name_edit"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:ems="10"
-		        android:inputType="textPersonName"
-		        android:textSize="@dimen/text_large"/>
-		    
-		    <TextView
-		        android:id="@+id/last_name_lable"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:text="@string/last_name_lable" 
-		        android:textSize="@dimen/text_normal"
-		        android:textStyle="bold"/>
-		   
-		    <EditText
-		        android:id="@+id/last_name_edit"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:ems="10"
-		        android:inputType="textPersonName"
-		        android:textSize="@dimen/text_large"/>
-		    
-		    <TextView
-		        android:id="@+id/username_lable"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:text="@string/username_lable" 
-		        android:textSize="@dimen/text_normal"
-		        android:textStyle="bold"/>
-		    
-		    <EditText
-		        android:id="@+id/username_edit"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:inputType="text"
-		        android:textSize="@dimen/text_large"/>
-		
-		    <LinearLayout 
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:orientation="horizontal"
-		        android:layout_marginTop="5dp"
-		        >
-		        
-		        <TextView
-			        android:id="@+id/birthday_lable"
+				    <ImageView 
+				        android:id="@+id/profile_image_edit"
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        android:contentDescription="@string/me_image_description"
+				        android:layout_centerHorizontal="true"/>
+				    
+				    <Button 
+				        android:id="@+id/image_edit_btn"
+				        android:layout_width="wrap_content"
+				        android:layout_height="30dp"
+				        android:text="@string/button_edit"
+				        android:textColor="@color/button_text_color"
+						android:background="@color/com_facebook_blue"
+						android:textSize="@dimen/text_normal"
+						android:layout_below="@id/profile_image_edit"
+						android:layout_alignLeft="@id/profile_image_edit"
+						android:layout_alignRight="@id/profile_image_edit"
+						android:paddingLeft="@dimen/button_padding_left_ridht"
+						android:paddingTop="@dimen/button_padding_top_bottom"
+						android:paddingRight="@dimen/button_padding_left_ridht"
+						android:paddingBottom="@dimen/button_padding_top_bottom"/>
+			        
+			    </RelativeLayout>
+			    
+			    <TextView
+			        android:id="@+id/first_name_lable"
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
-			        android:text="@string/me_birth"
+			        android:text="@string/first_name_lable"
 			        android:textSize="@dimen/text_normal"
 			        android:textStyle="bold"/>
-		        
-		        <TextView
-			        android:id="@+id/birthday_date"
+			
+			    <EditText
+			        android:id="@+id/first_name_edit"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:ems="10"
+			        android:inputType="textPersonName"
+			        android:textSize="@dimen/text_large"/>
+			    
+			    <TextView
+			        android:id="@+id/middle_name_lable"
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
-			        android:textSize="@dimen/text_large"
-			        android:layout_marginLeft="5dp"/>
-		        
-		        <Button 
-			        android:id="@+id/birthday_edit_btn"
+			        android:text="@string/middle_name_lable"
+			        android:textSize="@dimen/text_normal"
+			        android:textStyle="bold"/>
+			    
+			    <EditText
+			        android:id="@+id/middle_name_edit"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:ems="10"
+			        android:inputType="textPersonName"
+			        android:textSize="@dimen/text_large"/>
+			    
+			    <TextView
+			        android:id="@+id/last_name_lable"
 			        android:layout_width="wrap_content"
-			        android:layout_height="30dp"
-			        android:text="@string/button_edit"
-			        android:textColor="@color/button_text_color"
-					android:background="@color/com_facebook_blue"
-					android:textSize="@dimen/text_normal"
-					android:padding="@dimen/button_padding"
-					android:layout_marginLeft="10dp"/>
-		        
-		    </LinearLayout>
-		    
-		</LinearLayout>
-	</ScrollView>
+			        android:layout_height="wrap_content"
+			        android:text="@string/last_name_lable" 
+			        android:textSize="@dimen/text_normal"
+			        android:textStyle="bold"/>
+			   
+			    <EditText
+			        android:id="@+id/last_name_edit"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:ems="10"
+			        android:inputType="textPersonName"
+			        android:textSize="@dimen/text_large"/>
+			    
+			    <TextView
+			        android:id="@+id/username_lable"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:text="@string/username_lable" 
+			        android:textSize="@dimen/text_normal"
+			        android:textStyle="bold"/>
+			    
+			    <EditText
+			        android:id="@+id/username_edit"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:inputType="text"
+			        android:textSize="@dimen/text_large"/>
+			
+			    <LinearLayout 
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal"
+			        android:layout_marginTop="5dp"
+			        >
+			        
+			        <TextView
+				        android:id="@+id/birthday_lable"
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        android:text="@string/me_birth"
+				        android:textSize="@dimen/text_normal"
+				        android:textStyle="bold"/>
+			        
+			        <TextView
+				        android:id="@+id/birthday_date"
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        android:textSize="@dimen/text_large"
+				        android:layout_marginLeft="5dp"/>
+			        
+			        <Button 
+				        android:id="@+id/birthday_edit_btn"
+				        android:layout_width="wrap_content"
+				        android:layout_height="30dp"
+				        android:text="@string/button_edit"
+				        android:textColor="@color/button_text_color"
+						android:background="@color/com_facebook_blue"
+						android:textSize="@dimen/text_normal"
+						android:paddingLeft="@dimen/button_padding_left_ridht"
+						android:paddingTop="@dimen/button_padding_top_bottom"
+						android:paddingRight="@dimen/button_padding_left_ridht"
+						android:paddingBottom="@dimen/button_padding_top_bottom"
+						android:layout_marginLeft="10dp"/>
+			        
+			    </LinearLayout>
+			    
+			</LinearLayout>
+		</ScrollView>
+		
+	</RelativeLayout>
 	
-</RelativeLayout>
+	<com.ivtolkachev.fbfriendslistapp.widget.CalendarView
+	    android:id="@+id/edit_date_calendsr"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:layout_gravity="center"
+	    android:visibility="gone"
+	    />
+	
+</FrameLayout>

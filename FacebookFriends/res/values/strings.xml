@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <!-- COMMON -->
+   <!-- COMMON -->
     <string name="app_name">Facebook Friends</string>
     <string name="app_id">480200108696000</string>
     <string name="no_data">No Data</string>
@@ -44,5 +43,15 @@
     <!-- PREFERENCES -->
     <string name="app_preferences">AppPreferences</string>
     <string name="pref_user_id">user_id</string>
-
+    
+    <!-- CALENDAR VIEW -->
+    <string name="dateSliderTitle">Date</string>
+    <string name="Sun">sun</string>
+    <string name="Mon">mon</string>
+    <string name="Tue">tue</string>
+    <string name="Wed">wed</string>
+    <string name="Thu">thu</string>
+    <string name="Fri">fri</string>
+    <string name="Sat">sat</string>
+    <string name="button_done">Done</string>
 </resources>

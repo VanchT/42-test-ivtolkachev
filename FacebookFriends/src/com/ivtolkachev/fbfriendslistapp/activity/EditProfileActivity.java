@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,6 +29,7 @@ import com.ivtolkachev.fbfriendslistapp.FFApplication;
 import com.ivtolkachev.fbfriendslistapp.R;
 import com.ivtolkachev.fbfriendslistapp.data.DatabaseWorker;
 import com.ivtolkachev.fbfriendslistapp.model.User;
+import com.ivtolkachev.fbfriendslistapp.widget.CalendarView;
 
 public class EditProfileActivity extends Activity {
 	
@@ -43,6 +45,7 @@ public class EditProfileActivity extends Activity {
 	private EditText mLastNameField;
 	private EditText mUsernameField;
 	private TextView mBirthdayText;
+	private CalendarView mEditDateCalendar;
 	
 	private DatabaseWorker mDatabaseWorker;
 	private Bitmap mSelectedImage;
@@ -73,6 +76,8 @@ public class EditProfileActivity extends Activity {
 		mLastNameField = (EditText)findViewById(R.id.last_name_edit);
 		mUsernameField = (EditText)findViewById(R.id.username_edit);
 		mBirthdayText = (TextView)findViewById(R.id.birthday_date);
+		mEditDateCalendar = (CalendarView)findViewById(R.id.edit_date_calendsr);
+		mEditDateCalendar.setDate(FFApplication.getCurrentUser().getBirthday());
 		initListeners();
     }
     
@@ -104,8 +109,17 @@ public class EditProfileActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				
+				mEditDateCalendar.setVisibility(View.VISIBLE);
+				setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+			}
+		});
+    	
+    	mEditDateCalendar.setOnCloseListener(new CalendarView.CalendarOnCloseListener() {
+			
+			@Override
+			public void onClose(String date) {
+				mBirthdayText.setText(date);
+				setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
 			}
 		});
     }

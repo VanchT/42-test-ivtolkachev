@@ -1,6 +1,7 @@
 package com.ivtolkachev.fbfriendslistapp.net;
 
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -15,6 +16,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.facebook.HttpMethod;
 import com.facebook.Request;
@@ -51,10 +53,15 @@ public class FacebookLoader {
 			JSONObject jsonObject = graphObject.getInnerJSONObject();
 			if (jsonObject.has(Response.NON_JSON_RESPONSE_PROPERTY)){
 				try {
+					//byte[] urlInByteArray = jsonObject.getString(Response.NON_JSON_RESPONSE_PROPERTY).getBytes("UTF-8");
+					//imageUrl = new String(urlInByteArray);
 					imageUrl = jsonObject.getString(Response.NON_JSON_RESPONSE_PROPERTY);
+					Log.d(TAG, "url = " + imageUrl);
 				} catch (JSONException e) {
 					exception = e;
-				}
+				} /*catch (UnsupportedEncodingException e) {
+					exception = e;
+				}*/
 			}
 		}
 		return imageUrl;
