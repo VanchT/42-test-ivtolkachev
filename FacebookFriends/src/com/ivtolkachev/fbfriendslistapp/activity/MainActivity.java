@@ -116,19 +116,6 @@ public class MainActivity extends Activity {
 			}
 	}
     
-    private void handleReauthActivityResult(int requestCode, int resultCode, Intent data){
-    	if (resultCode == RESULT_OK) {
-			mUIHelper.onActivityResult(requestCode, resultCode, data);
-			return;
-		} 
-    	if (resultCode == RESULT_CANCELED) {
-			Log.d(TAG, "Close app");
-			Session.getActiveSession().closeAndClearTokenInformation();
-			Session.setActiveSession(null);
-			finish();
-		}
-    }
-    
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
