@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@color/calendar_holder_color"
+	android:padding="10dp">
+	
+	<LinearLayout
+		android:orientation="vertical"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:background="@color/white"
+		android:padding="1dp">
+	
+		<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+	
+			<ImageView
+				android:id="@+id/prevMonth"
+				android:src="@drawable/calendar_left_arrow_selector"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content">
+			</ImageView>
+			
+			<Button
+				android:id="@+id/currentMonth"
+				android:layout_weight="0.6"
+				android:textColor="#2060CE"
+				android:textAppearance="?android:attr/textAppearanceMedium"
+				android:background="@drawable/calendar_bar"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content">
+			</Button>
+			
+			<ImageView
+				android:id="@+id/nextMonth"
+				android:src="@drawable/calendar_right_arrow_selector"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content">
+			</ImageView>
+			
+		</LinearLayout>
+	
+		<LinearLayout
+		    android:orientation="horizontal"
+			android:layout_gravity="center"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/blue_bg_w_no_text">
+			
+			<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+	  		android:layout_width="wrap_content"
+	  		android:layout_weight=".14" 
+	  		android:gravity="center"
+	  		android:layout_height="wrap_content"
+	  		android:textColor="#FFFFFF"
+	  		android:shadowColor="#555555"
+			android:shadowDx="5.0"
+			android:shadowDy="5.0"
+			android:shadowRadius="3.0"
+			android:text="@string/Sun"/>
+			
+			<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+	  		android:layout_width="wrap_content"
+	  		android:layout_weight=".14" 
+	  		android:gravity="center"
+	  		android:layout_height="wrap_content"
+	  		android:textColor="#FFFFFF"
+	  		android:shadowColor="#555555"
+			android:shadowDx="5.0"
+			android:shadowDy="5.0"
+			android:shadowRadius="3.0"
+			android:text="@string/Mon"/>
+			
+			<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+	  		android:layout_width="wrap_content"
+	  		android:layout_weight=".14" 
+	  		android:gravity="center"
+	  		android:layout_height="wrap_content"
+	  		android:textColor="#FFFFFF"
+	  		android:shadowColor="#555555"
+			android:shadowDx="5.0"
+			android:shadowDy="5.0"
+			android:shadowRadius="3.0"
+			android:text="@string/Tue"/>
+			
+			<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+	  		android:layout_width="wrap_content"
+	  		android:layout_weight=".14" 
+	  		android:gravity="center"
+	  		android:layout_height="wrap_content"
+	  		android:textColor="#FFFFFF"
+	  		android:shadowColor="#555555"
+			android:shadowDx="5.0"
+			android:shadowDy="5.0"
+			android:shadowRadius="3.0"
+			android:text="@string/Wed"/>
+			
+			<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+	  		android:layout_width="wrap_content"
+	  		android:layout_weight=".14" 
+	  		android:gravity="center"
+	  		android:layout_height="wrap_content"
+	  		android:textColor="#FFFFFF"
+	  		android:shadowColor="#555555"
+			android:shadowDx="5.0"
+			android:shadowDy="5.0"
+			android:shadowRadius="3.0"
+			android:text="@string/Thu"/>
+			
+			<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+	  		android:layout_width="wrap_content"
+	  		android:layout_weight=".14" 
+	  		android:gravity="center"
+	  		android:layout_height="wrap_content"
+	  		android:textColor="#FFFFFF"
+	  		android:shadowColor="#555555"
+			android:shadowDx="5.0"
+			android:shadowDy="5.0"
+			android:shadowRadius="3.0"
+			android:text="@string/Fri"/>
+			
+			<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+	  		android:layout_width="wrap_content"
+	  		android:layout_weight=".14" 
+	  		android:gravity="center"
+	  		android:layout_height="wrap_content"
+	  		android:textColor="#FFFFFF"
+	  		android:shadowColor="#555555"
+			android:shadowDx="5.0"
+			android:shadowDy="5.0"
+			android:shadowRadius="3.0"
+			android:text="@string/Sat"/>
+		</LinearLayout>
+	
+	
+		<GridView
+			android:id="@+id/calendar"
+			android:numColumns="7"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="2dp">
+		</GridView>
+		
+		<Button 
+	        android:id="@+id/calendar_done_btn"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:text="@string/button_done"
+	        android:textColor="@color/button_text_color"
+			android:background="@drawable/calendar_button_selector"
+			android:textSize="@dimen/text_normal"
+			android:layout_marginTop="1dp"/>
+		
+	</LinearLayout>
+</FrameLayout>
